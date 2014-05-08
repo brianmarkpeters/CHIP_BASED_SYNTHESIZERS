@@ -1,28 +1,28 @@
-// DUAL POKEY SYNTHESIZER 1.00
+// QUAD SN76489 SYNTHESIZER 1.00
 // -Brian Peters
 // www.brianpeters.net
 //
 // - This is the single file version of the program for ease of copy/pasting.
-// - The program will also work with a single POKEY chip.
 // - Please see the schematic, feature list, channel/CC guide, and video
 //		for more information.
 //
 //
 //
+//
 //	- MATERIALS
 //
-//		- 1x Teensy 2.0 Board
-//			(www.pjrc.com)
-//		- 2x POKEY 40 Pin DIP
-//			(eBay or www.best-electronics-ca.com)
-//		- 1x 1.8432 MHz Full Can Oscillator
-//			(eBay)
-//		- 2x 10k Resistors
-//		- 2x 10uF Electrolytic Capacitors
-//		- 2x 1/4" Audio Jacks (or 3.5mm)
-//		- 1x 60+ Row Breadboard
-//		- 1x USB A to Mini B Cable
-//		- Lots of Wire
+// 		- 1x Teensy 2.0 Board
+//				(www.pjrc.com)
+//			- 4x SN76489AN 16 PIN DIP
+//				(eBay)
+//			- 1x 1.8432 MHz Full Can Oscillator
+//				(eBay)
+//			- 4x 75k Resistors
+//			- 4x 10uF Electrolytic Capacitors
+//			- 4x 1/4" Audio Jacks (or 3.5mm)
+//			- 1x 60+ Row Breadboard
+//			- 1x USB A to Mini B Cable
+//			- Lots of Wire
 //
 //
 //	- UPLOADING PROGRAM TO TEENSY (Ideally before wiring everything.)
@@ -34,128 +34,123 @@
 //		- Upload
 //
 //
-//	- CONNECTION LIST (POKEYS ARE INDEXED STARTING AT PIN 1)
+//	- CONNECTION LIST (SN76489s ARE INDEXED STARTING AT PIN 1)
 //
 //		- Teensy Vcc
 //			- Breadboard +5V Bus
-//				- POKEY #1 & #2 PIN 17 (Vcc)
-//				- POKEY #1 & #2 PIN 30 (CS1)
+//				- SN76489 #1-4 PIN 16 (Vcc)
 //				- Oscillator +5V (top right with sharp edge on top left)
-//				- 10k Resistor #1 & #2 Leg 1
 //		- Teensy GND
 //			- Breadboard GND Bus
-//				- POKEY #1 & #2 PIN 1 (Vss)
-//				- POKEY #1 & #2 PIN 32 (R/!W)
-//				- Oscillator GND (bottom left with sharp edge on top left)
-//				- Audio Jack #1 & #2 Sleeve
+//				- SN76489 #1-4 PIN 8 (GND)
+//				- SN76489 #1-4 PIN 6 (!OE)
+//				- Audio Jack #1-4 Sleeve
+//				- 75k Resistor #1-4 Leg 1
 //		- Teensy B0
-//			- POKEY #1 & #2 PIN 38 (D0)
+//			- SN76489 #1-4 PIN 10 (D0)
 //		- Teensy B1
-//			- POKEY #1 & #2 PIN 39 (D1)
+//			- SN76489 #1-4 PIN 11 (D1)
 //		- Teensy B2
-//			- POKEY #1 & #2 PIN 40 (D2)
+//			- SN76489 #1-4 PIN 12 (D2)
 //		- Teensy B3
-//			- POKEY #1 & #2 PIN 2 (D3)
+//			- SN76489 #1-4 PIN 13 (D3)
 //		- Teensy B4
-//			- POKEY #1 & #2 PIN 3 (D4)
+//			- SN76489 #1-4 PIN 15 (D4)
 //		- Teensy B5
-//			- POKEY #1 & #2 PIN 4 (D5)
+//			- SN76489 #1-4 PIN 1 (D5)
 //		- Teensy B6
-//			- POKEY #1 & #2 PIN 5 (D6)
+//			- SN76489 #1-4 PIN 2 (D6)
 //		- Teensy B7
-//			- POKEY #1 & #2 PIN 6 (D7)
-//		- Teensy D0
-//			- POKEY #1 & #2 PIN 36 (A0)
-//		- Teensy D1
-//			- POKEY #1 & #2 PIN 35 (A1)
-//		- Teensy D2
-//			- POKEY #1 & #2 PIN 34 (A2)
-//		- Teensy D3
-//			- POKEY #1 & #2 PIN 33 (A3)
-//		- Teensy C6
-//			- POKEY #1 PIN 30 (!CS0)
-//		- Teensy C7
-//			- POKEY #2 PIN 30 (!CS0)
+//			- SN76489 #1-4 PIN 3 (D7)
+//		- Teensy F7
+//			- SN76489 #1 PIN 5 (!WE)
+//		- Teensy F6
+//			- SN76489 #2 PIN 5 (!WE)
+//		- Teensy F5
+//			- SN76489 #3 PIN 5 (!WE)
+//		- Teensy F4
+//			- SN76489 #4 PIN 5 (!WE)
 //		- Oscillator Signal Out (bottom right with sharp edge on top left)
-//			- POKEY #1 & #2 PIN 7 (02)
-//		- POKEY #1 PIN 37 (Audio Out)
-//			- 10k Resistor #1 Leg 2
+//			- SN76489 #1-4 PIN 14 (CLOCK)
+//		- SN76489 #1 PIN 7 (SND OUT)
 //			- 10uF Electrolytic Capacitor #1 Positive Leg
-//		- 10uF Electrolytic Capacitor #1 Negative Leg
-//			- Audio Jack #1 Tip
-//		- POKEY #2 PIN 37 (Audio Out)
-//			- 10k Resistor #2 Leg 2
+//		- SN76489 #2 PIN 7 (SND OUT)
 //			- 10uF Electrolytic Capacitor #2 Positive Leg
+//		- SN76489 #3 PIN 7 (SND OUT)
+//			- 10uF Electrolytic Capacitor #3 Positive Leg
+//		- SN76489 #4 PIN 7 (SND OUT)
+//			- 10uF Electrolytic Capacitor #4 Positive Leg
+//		- 10uF Electrolytic Capacitor #1 Negative Leg
+//			- 75k Resistor #1 Leg 2
+//			- Audio Jack #1 Tip
 //		- 10uF Electrolytic Capacitor #2 Negative Leg
+//			- 75k Resistor #2 Leg 2
 //			- Audio Jack #2 Tip
-//
-//
+//		- 10uF Electrolytic Capacitor #3 Negative Leg
+//			- 75k Resistor #3 Leg 2
+//			- Audio Jack #3 Tip
+//		- 10uF Electrolytic Capacitor #4 Negative Leg
+//			- 75k Resistor #4 Leg 2
+//			- Audio Jack #4 Tip
 //
 //
 // PROGRAM STRUCTURE:
 //
 // 	Global Variables
-// 	PCM Sample Data
+//		PCM Sample Data
 // 	PCM Lengths
 //
-// setup
+//
+//	setup
 // loop
 //
 //
 // AUXILIARY FUNCTIONS:
+//
+//		mostRecentNoteInArray
+//		eraseOldestNoteInArray
+//		mostRecentVelocityInArray
+//		placeNoteInFirstEmptyArrayPosition
+//		placeNoteAndVelocityInFirstEmptyArrayPosition
+//		eraseThisNoteInArray
+//		testArrayContentsForAtLeastTwoNotes
+//		findSingleNoteInArray
+//		testArrayContentsForNoNotes
+//
+//
+//	OSCILLATOR AND ARPEGGIATOR FUNCTIONS:
+//
+//		mainSampleEngine
+//		mainPolyEngine
+//		bassArpeggiator
+//		mainBassEngine
+//		mainNoiseEngineOne
+//		leadOneArpeggiator
+//		mainLeadOneEngine
+//		leadTwoArpeggiator
+//		mainLeadTwoEngine
+//		
+//
+// MISC FUNCTIONS
+//
+//		ledFlash
+//
+//
+// SN76489 FUNCTIONS:
 // 
-// 	mostRecentNoteInArray
-// 	eraseOldestNoteInArray
-// 	mostRecentVelocityInArray
-// 	placeNoteInFirstEmptyArrayPosition
-// 	placeNoteAndVelocityInFirstEmptyArrayPosition
-// 	eraseThisNoteInArray
-// 	testArrayContentsForAtLeastTwoNotes
-// 	findSingleNoteInArray
-// 	testArrayContentsForNoNotes
+//		writeDataToSN76489
+//		writeNoiseType
+//		writeAmplitude
+//		writeFrequency
+//		
 //
+// MIDI CALLBACK FUNCTIONS:
 //
-// OSCILLATOR AND ARPEGGIATOR FUNCTIONS:
+//		OnNoteOn
+//		OnNoteOff
+//		OnControlChange
+//		OnPitchChange
 //
-// 	mainSampleEngine
-// 	chip0PolyEngine
-// 	chip1PolyEngine
-// 	leadOneArpeggiator
-// 	mainLeadOneEngine
-// 	leadTwoArpeggiator
-// 	mainLeadTwoEngine
-//
-//
-// MISC FUNCTIONS:
-//
-// 	ledFlash
-//
-//
-// POKEY COMMANDS (Internal)
-//
-// 	placeData
-// 	placeRegister
-// 	writePulseToCS
-// 	writeChannelControl
-//
-// 
-// POKEY COMMANDS (External)
-//
-// 	writeFrequency
-// 	writeShiftRegister
-// 	writeAmplitude
-// 	writeForceAmplitude
-// 	writeShiftRegisterAndAmplitude
-// 	writeShiftBits
-// 	writeChipDivider
-//
-//
-// MIDI CALLBACK FUNCTIONS
-//
-// 	OnNoteOn
-// 	OnNoteOff
-// 	OnControlChange
-// 	OnPitchChange
 //
 //
 // The usbMIDI.read() in the main loop can trigger all of the MIDI callback
@@ -163,8 +158,9 @@
 // functions.
 //
 // All of the functions in the main loop have a 1 as their first argument,
-// which allows them to update their portamento/arpeggiation/tremolo/decay/
-// sample.
+// which allows them to update their portamento/arpeggiation/tremolo/decay/sample.
+
+
 
 
 
@@ -178,25 +174,20 @@
 //////////////////////////////////////////
 
 
-byte transferHoldTime = 1;
+unsigned long oscillator = 1843200;
+byte transferHoldTime = 24;
 byte bendRange = 12;  // Default bend range
 boolean noVelocity = LOW; // Defaults all velocities to 127
 const float vibRateFactor = 1.0;
 const float vibDepth = 0.0004;
-const byte CS0chip0pin = 9;
-const byte CS0chip1pin = 10;
-boolean chipDivider = HIGH;
-boolean shiftBits = HIGH;
-boolean sampleEngineRunning = LOW;
-boolean polyEngineRunning = LOW;
+
+
 
 
 
 //////////////////////////////////////////
-//  PCM AUDIO
+//  PCM Sample Data
 //////////////////////////////////////////
-
-
 
 // 4ks/s, 8 Bit Audio (although 8 bit is converted to 4 bit for playback)
 PROGMEM prog_uchar sampleData[5338] = {
@@ -205,26 +196,28 @@ PROGMEM prog_uchar sampleData[5338] = {
 
 
 unsigned int sampleStarts[] = {
-	0x0,
-	0x310,
-	0x354,
-	0x394,
-	0x597,
-	0x7AD,
-	0x9A8,
-	0xB54,
-	0xC19,
-	0xCBB,
-	0x1215,
-	0x1423,
-	0x14DA,
-	0x9999,
-	0xAAAA,
-	0xBBBB,
-	0xCCCC,
-	0xDDDD,
-	0xEEEE
+  0x0,
+  0x310,
+  0x354,
+  0x394,
+  0x597,
+  0x7AD,
+  0x9A8,
+  0xB54,
+  0xC19,
+  0xCBB,
+  0x1215,
+  0x1423,
+  0x14DA,
+  0x9999,
+  0xAAAA,
+  0xBBBB,
+  0xCCCC,
+  0xDDDD,
+  0xEEEE
 };
+
+
 
 
 
@@ -234,105 +227,68 @@ unsigned int sampleStarts[] = {
 //////////////////////////////////////////
 
 
-
-
 void setup() {
-	
 	usbMIDI.setHandleNoteOff(OnNoteOff);
 	usbMIDI.setHandleNoteOn(OnNoteOn) ;
 	usbMIDI.setHandleControlChange(OnControlChange) ;
 	usbMIDI.setHandlePitchChange(OnPitchChange);
-	
+
+
 	// Sets all of PORTB as outputs.
 	// (Pins 0,1,2,3,13,14,15,4)
-	// Connected to D0-D7 on POKEY
+	// Connected to D0-D7 on SN76489
 	DDRB = DDRB | B11111111; // set the direction for PORTB
 
-	// Sets some of PORTD as outputs.
-	// (Pins 5,6,7,8)
-	// Connected to A0-A3 on POKEY
-	DDRD = DDRD | B01001111; // set the direction for PORTD
+	// Write Enable pins
+	// Each connected to !WE on each chip.
+	pinMode(16, OUTPUT);
+	digitalWrite(16, HIGH); 
+	pinMode(17, OUTPUT);
+	digitalWrite(17, HIGH);
+	pinMode(18, OUTPUT); 
+	digitalWrite(18, HIGH);
+	pinMode(19, OUTPUT);
+	digitalWrite(19, HIGH);
   
-	// Set pins for !Chip Select and set high (reverse logic)
-	pinMode(CS0chip0pin, OUTPUT);
-	digitalWrite(CS0chip0pin, HIGH);
-	pinMode(CS0chip1pin, OUTPUT);
-	digitalWrite(CS0chip1pin, HIGH);
-
 	// LED Pin
 	pinMode(11, OUTPUT);
-
-
-	// IRQEN Initialization
-	PORTD = B00001110;
-	delayMicroseconds(transferHoldTime);
-	PORTB = B00000000;
-	delayMicroseconds(transferHoldTime);
-	writePulseToCS(0);
-	writePulseToCS(1);
-
-	// SKCTL Initialization
-	PORTD = B00001111;
-	delayMicroseconds(transferHoldTime);
-	PORTB = B00000011;
-	delayMicroseconds(transferHoldTime);
-	writePulseToCS(0);
-	writePulseToCS(1);
-
-
-	writeShiftBits(HIGH,0);
-	delayMicroseconds(transferHoldTime);
-	writeChipDivider(LOW,0);
-	delayMicroseconds(transferHoldTime);
-	writeChannelControl(0,0,1,0);
-	delayMicroseconds(transferHoldTime);
-	writeChannelControl(0,0,2,0);
-	delayMicroseconds(transferHoldTime);
-	writeChannelControl(0,0,3,0);
-	delayMicroseconds(transferHoldTime);
-	writeChannelControl(0,0,4,0);
-	delayMicroseconds(transferHoldTime);
-	writeShiftBits(HIGH,1);
-	delayMicroseconds(transferHoldTime);
-	writeChipDivider(LOW,1);
-	delayMicroseconds(transferHoldTime);
-	writeChannelControl(0,0,1,1);
-	delayMicroseconds(transferHoldTime);
-	writeChannelControl(0,0,2,1);
-	delayMicroseconds(transferHoldTime);
-	writeChannelControl(0,0,3,1);
-	delayMicroseconds(transferHoldTime);
-	writeChannelControl(0,0,4,1);
-    
   
-	  
-	for (byte i=1;i<5;i++) {
-		writeShiftRegister(5,i,0);
-		writeAmplitude(127,i,0);
-		for (byte j=1;j<5;j++) {
-			writeFrequency(100*j,i,0);
-			delay(100);
-			ledFlash(2);
-		}
-	}
-	
-	for (byte i=1;i<5;i++) {
-		writeAmplitude(0,i,0);
-		writeFrequency(0,i,0);
-  	}
+  	writeAmplitude(0,3,0);
+	writeAmplitude(0,3,1);
+	writeAmplitude(0,3,2);
+	writeAmplitude(0,3,3);
 
-	for (byte i=4;i>0;i--) {
-		writeShiftRegister(5,i,1);
-		writeAmplitude(127,i,1);
-		for (byte j=4;j>0;j--) {
-			writeFrequency(100*j,i,1);
-			delay(100);
-		}
-	}
+
+	writeAmplitude(0,0,0);
+	writeAmplitude(0,1,0);
+	writeAmplitude(0,2,0);
+
+	writeAmplitude(0,0,1);
+	writeAmplitude(0,1,1);
+	writeAmplitude(0,2,1);
+
+	writeAmplitude(0,0,2);
+	writeAmplitude(0,1,2);
+	writeAmplitude(0,2,2);
+
+	writeAmplitude(0,0,3);
+	writeAmplitude(0,1,3);
+	writeAmplitude(0,2,3);
+
+
+
+
+
+	byte k;
   
-	for (byte i=4;i>0;i--) {
-		writeAmplitude(0,i,1);
-		writeFrequency(0,i,1);
+	for (byte i=0;i<4;i++) {
+		for (byte j=0;j<3;j++) {
+  			writeAmplitude(127,j,i);
+  			k = j + 1;
+  			writeFrequency(100*k,j,i);
+  			delay(100);
+  			writeAmplitude(0,j,i);
+		}
 	}
 }
 
@@ -343,8 +299,9 @@ void loop() {
 	usbMIDI.read();
 	ledFlash(1);
 	mainSampleEngine(1,0,0,0);
-	chip0PolyEngine(1,0,0);
-	chip1PolyEngine(1,0,0);
+	mainPolyEngine(1,0,0);
+	bassArpeggiator(1,0,0,0,0);
+	mainBassEngine(1,0,0,LOW,0,0);
 	leadOneArpeggiator(1,0,0,0,0);
 	mainLeadOneEngine(1,0,0,LOW,0,0);
 	leadTwoArpeggiator(1,0,0,0,0);
@@ -355,19 +312,20 @@ void loop() {
 
 
 
+
+
 //////////////////////////////////////////
 //  AUXILIARY FUNCTIONS
 //////////////////////////////////////////
 
 
-
 byte mostRecentNoteInArray (byte noteNumberArray[8], 
-	unsigned long noteDurationArray[8]) {
+	unsigned long noteDurationArray[8]){
   
 	byte i = 0;
 	unsigned long mostRecentNoteDuration = 0;
 	byte mostRecentNote = 0;
-	
+
 	for (i=0;i<8;i++) {
 		if (noteDurationArray[i] > mostRecentNoteDuration) {
 			mostRecentNoteDuration = noteDurationArray[i];
@@ -379,16 +337,14 @@ byte mostRecentNoteInArray (byte noteNumberArray[8],
 
 
 
+void eraseOldestNoteInArray (byte (&noteNumberArray)[6], 
+	byte (&noteVelocityArray)[6], unsigned long (&noteDurationArray)[6]) {
 
-
-void eraseOldestNoteInArray (byte (&noteNumberArray)[4], 
-	byte (&noteVelocityArray)[4], unsigned long (&noteDurationArray)[4]) {
-  
 	byte i = 0;
 	unsigned long oldestDuration = 4294967295;
 	byte oldestArrayPosition = 0;
 	
-	for (i=0;i<4;i++) {
+	for (i=0;i<6;i++) {
 		if (noteDurationArray[i] < oldestDuration) {
 			oldestDuration = noteDurationArray[i];
 			oldestArrayPosition = i;
@@ -404,11 +360,11 @@ void eraseOldestNoteInArray (byte (&noteNumberArray)[4],
 
 byte mostRecentVelocityInArray (byte noteVelocityArray[8], 
 	unsigned long noteDurationArray[8]) {
-  
+	
 	byte i = 0;
 	unsigned long mostRecentNoteDuration = 0;
 	byte mostRecentVelocity = 0;
-  
+	
 	for (i=0;i<8;i++) {
 		if (noteDurationArray[i] > mostRecentNoteDuration) {
 			mostRecentNoteDuration = noteDurationArray[i];
@@ -417,6 +373,7 @@ byte mostRecentVelocityInArray (byte noteVelocityArray[8],
 	}
 	return mostRecentVelocity;
 }
+
 
 
 
@@ -436,7 +393,7 @@ void placeNoteInFirstEmptyArrayPosition(byte (&noteNumberArray)[8],
 		for (int arrayCounter = 0; arrayCounter < 8; arrayCounter++) {
 			if (noteNumberArray[arrayCounter] == 0) {
 				noteNumberArray[arrayCounter] = outsideNoteNumber;
-				noteDurationArray[arrayCounter] = millis();
+            noteDurationArray[arrayCounter] = millis();
 				break;
 			}
 		}
@@ -449,7 +406,7 @@ void placeNoteInFirstEmptyArrayPosition(byte (&noteNumberArray)[8],
 void placeNoteAndVelocityInFirstEmptyArrayPosition(byte (&noteNumberArray)[8], 
 	unsigned long (&noteDurationArray)[8], byte outsideNoteNumber, 
 	byte (&noteVelocityArray)[8], byte outsideNoteVelocity) {
-	
+
 	boolean noteAlreadyStored = LOW;
 	
 	for (int arrayCounter = 0; arrayCounter < 8 ; arrayCounter++) {
@@ -460,10 +417,10 @@ void placeNoteAndVelocityInFirstEmptyArrayPosition(byte (&noteNumberArray)[8],
 	}
 	if (noteAlreadyStored == LOW) {
 		for (int arrayCounter = 0; arrayCounter < 8; arrayCounter++) {
-			if (noteNumberArray[arrayCounter] == 0) {
+			if (noteNumberArray[arrayCounter] == 0){
 				noteNumberArray[arrayCounter] = outsideNoteNumber;
-				noteDurationArray[arrayCounter] = millis();
-				noteVelocityArray[arrayCounter] = outsideNoteVelocity;
+            noteDurationArray[arrayCounter] = millis();
+            noteVelocityArray[arrayCounter] = outsideNoteVelocity;
 				break;
 			}
 		}
@@ -473,14 +430,15 @@ void placeNoteAndVelocityInFirstEmptyArrayPosition(byte (&noteNumberArray)[8],
 
 
 
+
 void eraseThisNoteInArray(byte (&noteNumberArray)[8], 
 	unsigned long (&noteDurationArray)[8], byte outsideNoteNumber) {
-	
+
 	for (int arrayCounter = 0; arrayCounter < 8; arrayCounter++) {
-		if (noteNumberArray[arrayCounter] == outsideNoteNumber){
+   	if (noteNumberArray[arrayCounter] == outsideNoteNumber) {
 			noteNumberArray[arrayCounter] = 0;
 			noteDurationArray[arrayCounter] = 0;
-		}
+      }
 	}
 }
 
@@ -488,26 +446,25 @@ void eraseThisNoteInArray(byte (&noteNumberArray)[8],
 
 
 boolean testArrayContentsForAtLeastTwoNotes (byte noteNumberArray[8]) {
-	
 	byte testArrayContents1 = 0;
 	byte testArrayContents2 = 0;
 	byte i = 0;
 	byte j = 0;
 		
 	while (i < 8) {
-		if (noteNumberArray[i] > 0) {
-			testArrayContents1 = noteNumberArray[i];
-			j = i+1;
-			while (j < 8) {
-				if (noteNumberArray[j] > 0) {
-					testArrayContents2 = noteNumberArray[j];
+   	if (noteNumberArray[i] > 0) {
+      	testArrayContents1 = noteNumberArray[i];
+   		j = i+1;
+   		while (j < 8) {
+   			if (noteNumberArray[j] > 0) {
+   				testArrayContents2 = noteNumberArray[j];
 					break;
 				}
 				j++;
-			}
-			break;
+      	}
+      	break;
 		}
-    	i++;
+		i++;
 	}
 	if ((testArrayContents1 > 0) && (testArrayContents2 > 0)) {
 		return HIGH;
@@ -520,15 +477,15 @@ boolean testArrayContentsForAtLeastTwoNotes (byte noteNumberArray[8]) {
 
 
 
+
 byte findSingleNoteInArray (byte noteNumberArray[8]) {
-	
 	byte arrayContents = 0;
 	byte i = 0;
   
 	while (i < 8) {
 		if (noteNumberArray[i] > 0) {
-			arrayContents = noteNumberArray[i];
-			break;
+      	arrayContents = noteNumberArray[i];
+      	break;
 		}
 		i++;
 	}
@@ -538,8 +495,8 @@ byte findSingleNoteInArray (byte noteNumberArray[8]) {
 
 
 
+
 boolean testArrayContentsForNoNotes (byte noteNumberArray[8]) {
-  
 	byte testArrayContents1 = 0;
 	byte testArrayContents2 = 0;
 	byte i = 0;
@@ -554,7 +511,7 @@ boolean testArrayContentsForNoNotes (byte noteNumberArray[8]) {
 					testArrayContents2 = noteNumberArray[j];
 					break;
 				}
-				j++;
+			j++;
 			}
 			break;
 		}
@@ -579,46 +536,44 @@ boolean testArrayContentsForNoNotes (byte noteNumberArray[8]) {
 
 
 void mainSampleEngine(byte dataType, byte noteNumber, 
-	byte noteVelocity, long longData) {
+	byte noteVelocity, long longData){
  
- 	static boolean insideRun = LOW;
-	static unsigned long sampleCounter = 0;
-	static byte sampleCounterIncrement = 1;
-	static unsigned long maxSampleCounter = 400;
-	byte current8bitSampleLevel;
-	byte current4bitSampleLevel;
-	static byte sampleNumber;
-	static byte insideNoteNumber;
-	unsigned long currentMicros;
-	static unsigned long previousMicros;
-	unsigned long elapsedTimeInMicros;
-	static unsigned long sampleRateMicros = 9;
-	static byte sampleIncrementRate = 1;
+	static boolean insideRun = LOW;
+   static unsigned long sampleCounter = 0;
+   static byte sampleCounterIncrement = 1;
+   static unsigned long maxSampleCounter = 400;
+   byte current8bitSampleLevel;
+   byte current4bitSampleLevel;
+   static byte sampleNumber;
+   static byte insideNoteNumber;
+   unsigned long currentMicros;
+   static unsigned long previousMicros;
+   unsigned long elapsedTimeInMicros;
+   static unsigned long sampleRateMicros = 9;
+   static byte sampleIncrementRate = 1;
 
- 	switch (dataType) {
+	switch (dataType) {
    
-		case 1: // Run in main loop
-   		if (insideRun == HIGH) {
+   	case 1: // Run in main loop
+			if (insideRun == HIGH) {
 				if (sampleCounter >= maxSampleCounter) {
 					sampleCounter = 0;
 					insideRun = LOW;
 				}
 			}
-   		
-   		if (insideRun == HIGH) {
+     
+			if (insideRun == HIGH) {
 				currentMicros = micros();
 				elapsedTimeInMicros = currentMicros - previousMicros;
 				if (elapsedTimeInMicros >= sampleRateMicros) {
-					current8bitSampleLevel = pgm_read_byte_near(
-						sampleData + (sampleStarts[sampleNumber]) + sampleCounter);
-					current4bitSampleLevel = 
-						(current8bitSampleLevel >> 4) & B00001111;
-					writeForceAmplitude(current4bitSampleLevel,1,0);
-					writeForceAmplitude(current4bitSampleLevel,2,0);
-					writeForceAmplitude(current4bitSampleLevel,3,0);
-					writeForceAmplitude(current4bitSampleLevel,4,0);
-					sampleCounter = sampleCounter + 
-						sampleIncrementRate;
+					current8bitSampleLevel = pgm_read_byte_near(sampleData + 
+						(sampleStarts[sampleNumber]) + sampleCounter);
+					current4bitSampleLevel = (current8bitSampleLevel >> 4) & 
+						B00001111;
+					writeDataToSN76489(B10010000 | current4bitSampleLevel, 0);
+					writeDataToSN76489(B10110000 | current4bitSampleLevel, 0);
+					writeDataToSN76489(B11010000 | current4bitSampleLevel, 0);
+					sampleCounter = sampleCounter + sampleIncrementRate;
 					previousMicros = micros();
 				}
 			}
@@ -629,15 +584,20 @@ void mainSampleEngine(byte dataType, byte noteNumber,
 				insideNoteNumber = noteNumber;
 				if ((noteNumber >= 48) && (noteNumber <= 66)) {
 					sampleNumber = noteNumber - 48;
+       
 					sampleCounter = 0;
 					maxSampleCounter = sampleStarts[sampleNumber + 1] - 
 						sampleStarts[sampleNumber];
+       
+					writeDataToSN76489(B10000001, 0); 
+					writeDataToSN76489(B00000000, 0); 
+
+					writeDataToSN76489(B10100001, 0);
+					writeDataToSN76489(B00000000, 0); 
+
+					writeDataToSN76489(B11000001, 0);
+					writeDataToSN76489(B00000000, 0);
 					insideRun = HIGH;
-					writeFrequency(4000,1,0);
-					writeFrequency(4000,2,0);
-					writeFrequency(4000,3,0);
-					writeFrequency(4000,4,0);
-					sampleEngineRunning = HIGH;
 				}
 			}
 		break;
@@ -645,7 +605,6 @@ void mainSampleEngine(byte dataType, byte noteNumber,
 		case 3: // Note Off
 			if (insideNoteNumber == noteNumber) {
 				insideRun = LOW;
-				sampleEngineRunning = LOW;
 			}
 		break;
    
@@ -657,8 +616,8 @@ void mainSampleEngine(byte dataType, byte noteNumber,
 				sampleIncrementRate = map(longData,0,8191,10,1);
 			}
 			if (longData >= 8193) {
-				sampleIncrementRate = map(longData,8193,16383,1,20);
-			}
+			sampleIncrementRate = map(longData,8193,16383,1,20);
+				}
 		break;
    
 		case 5: // CC1 Change
@@ -676,11 +635,11 @@ void mainSampleEngine(byte dataType, byte noteNumber,
 
 
 
-void chip0PolyEngine(byte dataType, byte noteNumber, byte noteVelocity) {
-  
-	static byte noteNumberArray[4];
-	static byte noteVelocityArray[4];
-	static unsigned long noteDurationsArray[4];
+void mainPolyEngine(byte dataType, byte noteNumber, byte noteVelocity) {
+
+	static byte noteNumberArray[6];
+	static byte noteVelocityArray[6];
+	static unsigned long noteDurationsArray[6];
 	static boolean insideRun = LOW;
 	static boolean decayOn = LOW;
 	static boolean arrayFull = LOW;
@@ -691,6 +650,8 @@ void chip0PolyEngine(byte dataType, byte noteNumber, byte noteVelocity) {
 	static byte currentDecayLevel2;
 	static byte currentDecayLevel3;
 	static byte currentDecayLevel4;
+	static byte currentDecayLevel5;
+	static byte currentDecayLevel6;
 	static boolean tremOn = LOW;
 	static int tremOffset = 0;
 	static unsigned int tremInterval = 1000;
@@ -703,9 +664,12 @@ void chip0PolyEngine(byte dataType, byte noteNumber, byte noteVelocity) {
 	static byte insideCC1 = 0;
 	byte i;
 
+
+
 	switch (dataType) {
-   	case 1: // Main Loop Run
-			if ((decayOn == HIGH) && (insideRun == HIGH)) {
+    
+		case 1: // Main Loop Run
+   		if ((decayOn == HIGH) && (insideRun == HIGH)) {
 				currentMicros = micros();
 				if ((currentMicros - previousTremMicros) >= tremInterval) {
 					currentMillis = millis();
@@ -713,162 +677,211 @@ void chip0PolyEngine(byte dataType, byte noteNumber, byte noteVelocity) {
 						1.0/(float)tremRateDivisor));
 					tremAmount2 = tremAmount * (float)tremMaxDepth;
 					tremOffset = tremAmount2 * ((float)insideCC1/127.0);
+					previousTremMicros = micros();
 				}
 				currentMicros = micros();
 				if ((currentMicros - previousDecayMicros) >= decayInterval) {
 					if (currentDecayLevel1 > 0) {
 						currentDecayLevel1--;
 						writeAmplitude((constrain(
-							currentDecayLevel1+tremOffset,0,127)),1,0);
+							currentDecayLevel1+tremOffset,0,127)),0,1);
 					}
 					else {
-						writeAmplitude(0,1,0);
+						writeAmplitude(0,0,1);
 					}
 					if (currentDecayLevel2 > 0) {
 						currentDecayLevel2--;
-						writeAmplitude((constrain(currentDecayLevel2 + 
-							tremOffset,0,127)),2,0);            
+						writeAmplitude((constrain(
+							currentDecayLevel2+tremOffset,0,127)),1,1);            
 					}
 					else {
-						writeAmplitude(0,2,0);
+						writeAmplitude(0,1,1);
 					}
-					if (currentDecayLevel3 > 0) {
+					if (currentDecayLevel3 > 0){
 						currentDecayLevel3--;
-						writeAmplitude((constrain(currentDecayLevel3 + 
-							tremOffset,0,127)),3,0);
+						writeAmplitude((constrain(
+							currentDecayLevel3+tremOffset,0,127)),2,1);
 					}
-					else {
-						writeAmplitude(0,3,0);
+					else{
+						writeAmplitude(0,2,1);
 					}
-					if (currentDecayLevel4 > 0) {
+					if (currentDecayLevel4 > 0){
 						currentDecayLevel4--;
-						writeAmplitude((constrain(currentDecayLevel4 + 
-							tremOffset,0,127)),4,0);
+						writeAmplitude((constrain(
+							currentDecayLevel4+tremOffset,0,127)),0,2);
 					}
-					else {
-						writeAmplitude(0,4,0);
+					else{
+						writeAmplitude(0,0,2);
+					}
+					if (currentDecayLevel5 > 0){
+						currentDecayLevel5--;
+						writeAmplitude((constrain(
+							currentDecayLevel5+tremOffset,0,127)),1,2);
+					}
+					else{
+						writeAmplitude(0,1,2);
+					}
+					if (currentDecayLevel6 > 0){
+						currentDecayLevel6--;  
+						writeAmplitude((constrain(
+							currentDecayLevel6+tremOffset,0,127)),2,2);
+					}
+					else{
+						writeAmplitude(0,2,2);
 					}
 					previousDecayMicros = micros();
-					previousTremMicros = micros();
-				}
+            }
 			}
         
-			if ((decayOn == LOW) && (insideRun == HIGH)) {
+      	if ((decayOn == LOW) && (insideRun == HIGH)) {
 				currentMicros = micros();
 				if ((currentMicros - previousTremMicros) >= tremInterval) {
 					currentMillis = millis();
-					tremAmount = sin(((float)currentMillis * 
-						1.0/(float)tremRateDivisor));
-					tremAmount2 = tremAmount * (float)tremMaxDepth;
-					tremOffset = tremAmount2 * ((float)insideCC1/127.0);
-					writeAmplitude((constrain(currentDecayLevel1 + 
-						tremOffset,0,127)),1,0);
-					writeAmplitude((constrain(currentDecayLevel2 + 
-						tremOffset,0,127)),2,0);
-					writeAmplitude((constrain(currentDecayLevel3 + 
-						tremOffset,0,127)),3,0);
-					writeAmplitude((constrain(currentDecayLevel4 + 
-						tremOffset,0,127)),4,0);
-					previousTremMicros = micros();
+          		tremAmount = sin(((float)currentMillis * 
+          			1.0/(float)tremRateDivisor));
+          		tremAmount2 = tremAmount * (float)tremMaxDepth;
+          		tremOffset = tremAmount2 * ((float)insideCC1/127.0);
+          		writeAmplitude((constrain(
+          			currentDecayLevel1+tremOffset,0,127)),0,1);
+          		writeAmplitude((constrain(
+          			currentDecayLevel2+tremOffset,0,127)),1,1);
+          		writeAmplitude((constrain(
+          			currentDecayLevel3+tremOffset,0,127)),2,1);
+          		writeAmplitude((constrain(
+          			currentDecayLevel4+tremOffset,0,127)),0,2);
+          		writeAmplitude((constrain(
+          			currentDecayLevel5+tremOffset,0,127)),1,2);
+          		writeAmplitude((constrain(
+          			currentDecayLevel6+tremOffset,0,127)),2,2);
+          		previousTremMicros = micros();
 				}
 			}
+    
 		break;
     
+
 		case 2: // Note On
 			insideRun = HIGH;
-			polyEngineRunning = HIGH;
 			arrayFull = HIGH;
-			for (i=0;i<4;i++) {
+			for (i=0;i<6;i++) {
 				if (noteNumberArray[i] == 0) {
 					arrayFull = LOW;
 				}
 			}
 			if (arrayFull == HIGH) {
-				eraseOldestNoteInArray(noteNumberArray,
-					noteVelocityArray,noteDurationsArray);    
+				eraseOldestNoteInArray(noteNumberArray,noteVelocityArray,
+					noteDurationsArray);    
 			}
-			for (i=0;i<4;i++) {
+      
+			for (i=0;i<6;i++) {
 				if ((noteNumberArray[i] == 0) && (noteNumber > 0)) {
 					noteNumberArray[i] = noteNumber;
 					noteVelocityArray[i] = noteVelocity;
 					noteDurationsArray[i] = millis();
           
 					float pitchInHertz;
-					pitchInHertz = 440.00 * 
-						pow(2, ((noteNumber - 69) / 12.00));
+					pitchInHertz = 440.00 * pow(2, ((noteNumber - 69) / 12.00));
                     
 					switch (i) {
-						case 0: 
-							writeFrequency(pitchInHertz,1,0);
-							writeAmplitude(noteVelocity,1,0);
+            		case 0: 
+							writeFrequency(pitchInHertz,0,1);
+							writeAmplitude(noteVelocity,0,1);
 							currentDecayLevel1 = noteVelocity;
-						break;
-						
-						case 1: 
-							writeFrequency(pitchInHertz,2,0);
-							writeAmplitude(noteVelocity,2,0);
+            		break;
+            		
+            		case 1: 
+							writeFrequency(pitchInHertz,1,1);
+							writeAmplitude(noteVelocity,1,1);
 							currentDecayLevel2 = noteVelocity;
-						break;
-						
-						case 2: 
-							writeFrequency(pitchInHertz,3,0);
-							writeAmplitude(noteVelocity,3,0);
+            		break;
+            		
+            		case 2: 
+							writeFrequency(pitchInHertz,2,1);
+							writeAmplitude(noteVelocity,2,1);
 							currentDecayLevel3 = noteVelocity;
-						break;
-						
-						case 3: 
-							writeFrequency(pitchInHertz,4,0);
-							writeAmplitude(noteVelocity,4,0);
+            		break;
+            		
+            		case 3: 
+							writeFrequency(pitchInHertz,0,2);
+							writeAmplitude(noteVelocity,0,2);
 							currentDecayLevel4 = noteVelocity;
-						break;
+            		break;
+            		
+            		case 4: 
+							writeFrequency(pitchInHertz,1,2);
+							writeAmplitude(noteVelocity,1,2);
+							currentDecayLevel5 = noteVelocity;
+            		break;
+            		
+            		case 5: 
+							writeFrequency(pitchInHertz,2,2);
+							writeAmplitude(noteVelocity,2,2);
+							currentDecayLevel6 = noteVelocity;
+            		break;            
 					}
-					break;
+          		break;
 				}
 			} 
 		break;
     
 		case 3: // Note Off
-			for (i=0;i<4;i++) {
+			for (i=0;i<6;i++) {
 				if ((noteNumberArray[i] == noteNumber) && (noteNumber > 0)) {
 					noteNumberArray[i] = 0;
 					noteVelocityArray[i] = 0;
-					noteDurationsArray[i] = 0;
+					noteDurationsArray[i] = 4294967295;
           
 					switch (i) {
-						case 0: 
-							writeFrequency(0,1,0);
-							writeAmplitude(0,1,0);
+            		case 0: 
+							writeFrequency(0,0,1);
+							writeAmplitude(0,0,1);
 							currentDecayLevel1 = 0;
-						break;
-						
-						case 1: 
-							writeFrequency(0,2,0);
-							writeAmplitude(0,2,0);
+            		break;
+            		
+            		case 1: 
+							writeFrequency(0,1,1);
+							writeAmplitude(0,1,1);
 							currentDecayLevel2 = 0;
-						break;
-						
-						case 2: writeFrequency(0,3,0);
-							writeAmplitude(0,3,0);
+            		break;
+            		
+            		case 2: 
+							writeFrequency(0,2,1);
+							writeAmplitude(0,2,1);
 							currentDecayLevel3 = 0;
-						break;
-						
-						case 3: writeFrequency(0,4,0);
-							writeAmplitude(0,4,0);
+            		break;
+            		
+            		case 3: 
+							writeFrequency(0,0,2);
+							writeAmplitude(0,0,2);
 							currentDecayLevel4 = 0;
-						break;
+            		break;
+            		
+            		case 4: 
+							writeFrequency(0,1,2);
+							writeAmplitude(0,1,2);
+							currentDecayLevel5 = 0;
+            		break;
+            		
+            		case 5: 
+							writeFrequency(0,2,2);
+							writeAmplitude(0,2,2);
+							currentDecayLevel6 = 0;
+            		break;            
 					}
+          
 					if (testArrayContentsForNoNotes(noteNumberArray) == HIGH) {
-						writeAmplitude(0,1,0);
-						writeAmplitude(0,2,0);
-						writeAmplitude(0,3,0);
-						writeAmplitude(0,4,0);
+						writeAmplitude(0,0,1);
+						writeAmplitude(0,1,1);
+						writeAmplitude(0,2,1);
+						writeAmplitude(0,0,2);
+						writeAmplitude(0,1,2);
+						writeAmplitude(0,2,2);
 						insideRun = LOW;
-						polyEngineRunning = LOW;
 					}
-          		break;
+         	break;
 				}
 			}
-		break;
+      break;
     
 		case 4: // Pitch Bend (Unused)
 		break;
@@ -876,7 +889,7 @@ void chip0PolyEngine(byte dataType, byte noteNumber, byte noteVelocity) {
 		case 5: // CC 1 Change
 			insideCC1 = noteNumber;
 		break;
-		
+    
 		case 6: // CC3 Decay
 			if ((noteNumber == 0) && (decayOn == HIGH)) {
 				decayOn = LOW;
@@ -892,216 +905,399 @@ void chip0PolyEngine(byte dataType, byte noteNumber, byte noteVelocity) {
 
 
 
-void chip1PolyEngine(byte dataType, byte noteNumber, byte noteVelocity) {
 
-	static byte noteNumberArray[4];
-	static byte noteVelocityArray[4];
-	static unsigned long noteDurationsArray[4];
-	static boolean insideRun = LOW;
-	static boolean decayOn = LOW;
-	static boolean arrayFull = LOW;
-	static unsigned int decayInterval;
-	static unsigned long previousDecayMicros;
-	unsigned long currentMicros;
-	static byte currentDecayLevel1;
-	static byte currentDecayLevel2;
-	static byte currentDecayLevel3;
-	static byte currentDecayLevel4;
-	static boolean tremOn = LOW;
-	static int tremOffset = 0;
-	static unsigned int tremInterval = 1000;
-	static unsigned long previousTremMicros;
-	unsigned long currentMillis;
-	static float tremRateDivisor = 21.0; // Smaller is faster.
-	static float tremAmount;
-	static float tremAmount2;
-	static int tremMaxDepth = 64;
-	static byte insideCC1 = 0;
-	byte i;
+
+void bassArpeggiator(byte dataType, byte noteNumber, byte noteVelocity, 
+	byte noteNumberFromArray, unsigned long noteDurationFromArray) {
+  
+	static byte arpNoteNumberArray[8];
+   static unsigned long arpNoteDurationArray[8];
+   static boolean arpeggiatorOn;
+   unsigned long currentMillis;
+   static unsigned long previousMillis;
+   unsigned long elapsedTimeInMillis;
+   static unsigned int arpeggiatorInterval = 250;
+   static byte currentArpArrayPosition;
+   static boolean arpeggiatorRunning = LOW;
+   byte transitionNote;
 
 	switch (dataType) {
-   	case 1: // Main Loop Run
-			if ((decayOn == HIGH) && (insideRun == HIGH)) {
-				currentMicros = micros();
-				if ((currentMicros - previousTremMicros) >= tremInterval) {
-            	currentMillis = millis();
-            	tremAmount = sin(((float)currentMillis * 
-            		1.0/(float)tremRateDivisor));
-            	tremAmount2 = tremAmount * (float)tremMaxDepth;
-            	tremOffset = tremAmount2 * ((float)insideCC1/127.0);
-				}
-				currentMicros = micros();
-				if ((currentMicros - previousDecayMicros) >= decayInterval) {
-					if (currentDecayLevel1 > 0) {
-						currentDecayLevel1--;
-						writeAmplitude((constrain(currentDecayLevel1 + 
-							tremOffset,0,127)),1,1);
+    
+		case 1: // Main Loop Run
+			if ((arpeggiatorOn == HIGH) && (arpeggiatorRunning == HIGH)) {
+				currentMillis = millis();
+				elapsedTimeInMillis = currentMillis - previousMillis;
+				if (elapsedTimeInMillis >= arpeggiatorInterval) {
+					mainBassEngine(3,arpNoteNumberArray[currentArpArrayPosition],
+						0,HIGH,1,0);
+					if (currentArpArrayPosition < 8) {
+						currentArpArrayPosition++;
 					}
 					else {
-						writeAmplitude(0,1,1);
+						currentArpArrayPosition = 0;
 					}
-					if (currentDecayLevel2 > 0) {
-						currentDecayLevel2--;
-						writeAmplitude((constrain(currentDecayLevel2 + 
-							tremOffset,0,127)),2,1);            
+					while (arpNoteNumberArray[currentArpArrayPosition] == 0) {
+						if (currentArpArrayPosition < 8) {
+							currentArpArrayPosition++;
+						}
+						else {
+							currentArpArrayPosition = 0;
+						}
 					}
-					else {
-						writeAmplitude(0,2,1);
-					}
-					if (currentDecayLevel3 > 0) {
-						currentDecayLevel3--;
-						writeAmplitude((constrain(currentDecayLevel3 + 
-							tremOffset,0,127)),3,1);
-					}
-					else {
-						writeAmplitude(0,3,1);
-					}
-					if (currentDecayLevel4 > 0) {
-						currentDecayLevel4--;
-						writeAmplitude((constrain(currentDecayLevel4 + 
-							tremOffset,0,127)),4,1);
-					}
-					else {
-						writeAmplitude(0,4,1);
-					}
-					previousDecayMicros = micros();
-					previousTremMicros = micros();
+					mainBassEngine(2,arpNoteNumberArray[currentArpArrayPosition],
+						0,HIGH,1,0);
+					previousMillis = millis();
 				}
 			}
-        
-			if ((decayOn == LOW) && (insideRun == HIGH)) {
+      break;
+    
+		case 2: // Note On
+			if (arpeggiatorOn == HIGH) {
+				placeNoteInFirstEmptyArrayPosition(arpNoteNumberArray,
+					arpNoteDurationArray,noteNumber);
+				arpeggiatorRunning = 
+					testArrayContentsForAtLeastTwoNotes(
+					arpNoteNumberArray) ? HIGH : LOW;
+				if (arpeggiatorRunning == LOW) {
+					mainBassEngine(2,noteNumber,0,HIGH,0,0);
+				}  
+			}
+		break;
+    
+		case 3: // Note Off
+			if (arpeggiatorOn == HIGH) {
+				eraseThisNoteInArray(arpNoteNumberArray,
+					arpNoteDurationArray,noteNumber);
+				arpeggiatorRunning = 
+					testArrayContentsForAtLeastTwoNotes(
+					arpNoteNumberArray) ? HIGH : LOW;
+				if (arpeggiatorRunning == LOW) {
+					mainBassEngine(3,noteNumber,0,HIGH,0,0);
+					if (testArrayContentsForNoNotes(arpNoteNumberArray) == LOW) {
+						mainBassEngine(2,findSingleNoteInArray(
+							arpNoteNumberArray),0,HIGH,0,0);
+					}
+				}
+			}
+		break;
+    
+		case 4: // CC4: Arpeggiator On/Off
+			if ((noteNumber > 0) && (arpeggiatorOn == LOW)) {
+				arpeggiatorOn = HIGH;
+				mainBassEngine(8,0,0,HIGH,0,0);
+				arpeggiatorRunning = testArrayContentsForAtLeastTwoNotes(
+					arpNoteNumberArray) ? HIGH : LOW;
+			}
+			if (noteNumber == 0) {
+				arpeggiatorOn = LOW;
+				mainBassEngine(3,arpNoteNumberArray[currentArpArrayPosition],
+					0,HIGH,0,0);
+				transitionNote = mostRecentNoteInArray(arpNoteNumberArray,
+					arpNoteDurationArray);
+				if (transitionNote > 0) {
+					mainBassEngine(2,transitionNote,0,HIGH,0,0);
+				}
+				for (int i=0;i<8;i++) {
+					mainBassEngine(8,i,0,LOW,arpNoteNumberArray[i],
+						arpNoteDurationArray[i]);
+				}
+			}
+		break;
+    
+		case 5: // Changes Arpeggiator Speed
+			arpeggiatorInterval = map(noteNumber,0,127,10,250);
+		break;
+    
+		case 6: // Accepts noteNumberArray and noteDurationArray
+			arpNoteNumberArray[noteNumber] = noteNumberFromArray;
+			arpNoteDurationArray[noteNumber] = noteDurationFromArray;
+		break;
+	}
+}
+
+
+void mainBassEngine(byte dataType, byte noteNumber, float floatData, 
+	boolean noteComingFromArpeggiator, byte arpNoteNumberFromArray, 
+	unsigned long arpNoteDurationFromArray) {
+
+	static boolean insideRun = LOW;
+	static byte noteNumberArray[8];
+	static unsigned long noteDurationArray[8];
+	static boolean portamentoOn = HIGH;
+	static boolean portamentoRunning = LOW;
+	static boolean portamentoDirection;
+	unsigned long currentMicros;
+	static unsigned long previousPortamentoChange;
+	static unsigned long portamentoSpeedInMicros = 50;
+	float portamentoStepInHertz;
+	static float insidePitchInHertz;
+	static float insideTargetPitchInHertz;
+	static float insidePitchInHertzAfterFactors;
+	static float insideBendFactor = 1.0;
+	static boolean arpeggiatorOn = LOW;
+	static unsigned long decayInterval;
+	static boolean decayOn = LOW;
+	static byte currentDecayLevel = 127;
+	static unsigned long previousDecayMicros;   
+	
+	static float insideVibFactor = 1.0;
+	static byte insideCC1 = 0;
+	static float vibRateDivisor = 23.0;
+	unsigned long currentVibCountMicros;
+	static unsigned long sineVibSpeedStepsInMicros = 2000;
+	static int vibAmount = 0;
+	static float vibAmount2 = 0.0;
+	static float vibFactor = 1.0;
+	static int modWheelFactor = 0;
+	static unsigned long previousVibCountMicros = 0;
+	static unsigned long currentMillis;
+  
+	switch (dataType) {
+    
+		case 1: // Main Loop Run
+			if ((insideRun == HIGH) && (portamentoOn == HIGH) && 
+				(portamentoRunning == HIGH) && (decayOn == LOW)) {
+				
 				currentMicros = micros();
-				if ((currentMicros - previousTremMicros) >= tremInterval) {
+				if ((portamentoDirection == LOW) && (currentMicros - 
+					previousPortamentoChange >= portamentoSpeedInMicros)) {
+            
+            	portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
+            	insidePitchInHertz = insidePitchInHertz - portamentoStepInHertz;
+            	previousPortamentoChange = micros();
+            
+					if (insidePitchInHertz <= insideTargetPitchInHertz) {
+						portamentoRunning = LOW;
+						insidePitchInHertz = insideTargetPitchInHertz;
+					}
+            
+					insidePitchInHertzAfterFactors = insidePitchInHertz * 
+						insideBendFactor * insideVibFactor;
+					writeFrequency(insidePitchInHertzAfterFactors,2,3);
+				}
+          
+				if ((portamentoDirection == HIGH) && (currentMicros - 
+					previousPortamentoChange >= portamentoSpeedInMicros)) {
+            
+					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
+					insidePitchInHertz = insidePitchInHertz + portamentoStepInHertz;
+					previousPortamentoChange = micros();
+            
+					if (insidePitchInHertz >= insideTargetPitchInHertz) {
+						portamentoRunning = LOW;
+						insidePitchInHertz = insideTargetPitchInHertz;
+					}
+            
+					insidePitchInHertzAfterFactors = insidePitchInHertz * 
+						insideBendFactor * insideVibFactor;
+					writeFrequency(insidePitchInHertzAfterFactors,2,3);
+				}  
+			}
+        
+			if (insideCC1 > 0) {
+				currentVibCountMicros = micros();
+
+				// Limits how often the chip can calculate the sine function.
+				if  ((currentVibCountMicros - previousVibCountMicros) >= 
+					sineVibSpeedStepsInMicros) { 
+					
 					currentMillis = millis();
-					tremAmount = sin(((float)currentMillis * 
-						1.0/(float)tremRateDivisor));
-					tremAmount2 = tremAmount * (float)tremMaxDepth;
-					tremOffset = tremAmount2 * ((float)insideCC1/127.0);
-					writeAmplitude((constrain(currentDecayLevel1 + 
-						tremOffset,0,127)),1,1);
-					writeAmplitude((constrain(currentDecayLevel2 + 
-						tremOffset,0,127)),2,1);
-					writeAmplitude((constrain(currentDecayLevel3 + 
-						tremOffset,0,127)),3,1);
-					writeAmplitude((constrain(currentDecayLevel4 + 
-						tremOffset,0,127)),4,1);
-					previousTremMicros = micros();
+
+					//range of  1 to -1, sclaed to time, factored to 100 to -100
+					vibAmount = sin(((float)currentMillis * (float)vibRateFactor) / 
+						(float)vibRateDivisor) * 100.0; 
+
+					previousVibCountMicros = micros();
+
+					//Scales vibAmount to very small positive or negative amounts.                  
+					vibAmount2 = (float)vibAmount * vibDepth;
+
+					modWheelFactor = map(insideCC1, 0, 127, 0, 2000);
+					insideVibFactor = 1.0 + (vibAmount2 * 
+						((float)modWheelFactor/1000));
+                  
+					insidePitchInHertzAfterFactors = insidePitchInHertz * 
+						insideBendFactor * insideVibFactor;
+					
+					writeFrequency(insidePitchInHertzAfterFactors,2,3);
+				}
+			}
+
+			else { 
+				insideVibFactor = 1.0;
+			}
+        
+			if ((decayOn == HIGH) && (insideRun == HIGH)) {
+				currentMicros = micros();
+				if ((currentMicros - previousDecayMicros) >= decayInterval) {
+					writeAmplitude(currentDecayLevel,3,3);
+					if (currentDecayLevel > 0) {
+						currentDecayLevel--;
+					}
+					previousDecayMicros = micros();
 				}
 			}
 		break;
     
 		case 2: // Note On
-			insideRun = HIGH;
-			polyEngineRunning = HIGH;
-			arrayFull = HIGH;
-			for (i=0;i<4;i++) {
-				if (noteNumberArray[i] == 0) {
-					arrayFull = LOW;
+			if ((arpeggiatorOn == LOW) || (noteComingFromArpeggiator == HIGH)) {
+				if (insideRun == LOW) {
+					insidePitchInHertz = 1752.00 * 
+						pow(2, ((noteNumber - 70) / 12.00));
+					insidePitchInHertzAfterFactors = insidePitchInHertz * 
+						insideBendFactor * insideVibFactor;
+					writeFrequency(insidePitchInHertzAfterFactors,2,3);
+					writeNoiseType(69,3);
+					writeAmplitude(127,3,3);
+					if (arpeggiatorOn == LOW) {
+						placeNoteInFirstEmptyArrayPosition(
+							noteNumberArray,noteDurationArray,noteNumber);
+					}
+					insideRun = HIGH;
+					portamentoRunning = LOW;
+				}
+      
+				if ((insideRun == HIGH) && (arpeggiatorOn == LOW)) {
+					insideTargetPitchInHertz = 1752.00 * 
+						pow(2, ((noteNumber - 70) / 12.00));
+					portamentoRunning = HIGH;
+					placeNoteInFirstEmptyArrayPosition(
+						noteNumberArray,noteDurationArray,noteNumber);
+					
+					if (insideTargetPitchInHertz > insidePitchInHertz) {
+						portamentoDirection = HIGH;
+					}
+					else {
+						portamentoDirection = LOW;
+					}
+				}
+				currentDecayLevel = 127;
+      
+				if ((decayOn == HIGH) && (arpeggiatorOn == LOW)) {
+					insidePitchInHertz = insideTargetPitchInHertz;
+					
+					insidePitchInHertzAfterFactors = insidePitchInHertz * 
+						insideBendFactor * insideVibFactor;
+					
+					writeFrequency(insidePitchInHertzAfterFactors,2,3);
 				}
 			}
-			if (arrayFull == HIGH) {
-				eraseOldestNoteInArray(noteNumberArray,
-					noteVelocityArray,noteDurationsArray);    
+		break;
+      
+	case 3: // Note Off
+      if ((arpeggiatorOn == LOW) || (noteComingFromArpeggiator == HIGH)){
+      	if (arpeggiatorOn == LOW){
+				eraseThisNoteInArray(noteNumberArray,noteDurationArray,noteNumber);
+				if (mostRecentNoteInArray(noteNumberArray,noteDurationArray) == 0){
+					writeAmplitude(0,3,3);
+					writeAmplitude(0,2,3);
+					writeFrequency(0,2,3);
+					insideRun = LOW;
+				}
+				else if (decayOn == LOW) {
+					mainBassEngine(2,mostRecentNoteInArray(noteNumberArray,
+						noteDurationArray),0,LOW,0,0);
+				}
 			}
       
-			for (i=0;i<4;i++) {
-				if ((noteNumberArray[i] == 0) && (noteNumber > 0)) {
-					noteNumberArray[i] = noteNumber;
-					noteVelocityArray[i] = noteVelocity;
-					noteDurationsArray[i] = millis();
-					
-					float pitchInHertz;
-					pitchInHertz = 440.00 * pow(2, ((noteNumber - 69) / 12.00));
-          					
-					switch (i) {
-						case 0: 
-							writeFrequency(pitchInHertz,1,1);
-							writeAmplitude(noteVelocity,1,1);
-							currentDecayLevel1 = noteVelocity;
-						break;
-						
-						case 1: 
-							writeFrequency(pitchInHertz,2,1);
-							writeAmplitude(noteVelocity,2,1);
-							currentDecayLevel2 = noteVelocity;
-						break;
-						
-						case 2: 
-							writeFrequency(pitchInHertz,3,1);
-							writeAmplitude(noteVelocity,3,1);
-							currentDecayLevel3 = noteVelocity;
-						break;
-						
-						case 3: 
-							writeFrequency(pitchInHertz,4,1);
-							writeAmplitude(noteVelocity,4,1);
-							currentDecayLevel4 = noteVelocity;
-						break;
-					}
-					break;
-				}
-			} 
+			if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 0)) {
+				writeAmplitude(0,3,3);
+				writeAmplitude(0,2,3);
+				writeFrequency(0,2,3);
+				insideRun = LOW;
+			}
+      
+			// If notes are coming from main arp sequencer.
+			if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 1)) { 
+				insideRun = LOW;
+			}
+      }
+	break;
+    
+	case 4: // Pitch Bend
+		insideBendFactor = floatData;
+		insidePitchInHertzAfterFactors = insidePitchInHertz * 
+			insideBendFactor * insideVibFactor;
+		writeFrequency(insidePitchInHertzAfterFactors,2,3);
+	break;
+    
+	case 5: // ModWheel
+		insideCC1 = noteNumber;
+	break;
+    
+	case 6: // CC3 Decay
+		if ((noteNumber == 0) && (decayOn == HIGH)) {
+			decayOn = LOW;
+			portamentoOn = HIGH;
+		}
+		else {
+			decayOn = HIGH;
+			portamentoOn = LOW;
+			decayInterval = map(noteNumber,0,127,25000,500);
+		}
+	break;
+    
+	case 7: // CC5 Arp Speed Change
+	break;
+    
+	case 8: // Arpeggiator Has Turned On Or Off.  Receive or transmit array.
+		if (noteComingFromArpeggiator == HIGH) {
+			arpeggiatorOn = HIGH;
+			for (int i=0;i<8;i++) {
+				bassArpeggiator(6,i,0,noteNumberArray[i],noteDurationArray[i]);
+			}
+		}
+      
+		else {
+			arpeggiatorOn = LOW;
+			noteNumberArray[noteNumber] = arpNoteNumberFromArray;
+			noteDurationArray[noteNumber] = arpNoteDurationFromArray;
+		}
+	break;
+
+	case 9:
+		portamentoSpeedInMicros = map(noteNumber,0,127,20,2000);
+	break;
+    
+	}
+}
+
+
+
+
+
+void mainNoiseEngineOne(byte dataType, byte noteNumber, byte noteVelocity) {
+	
+	static boolean insideRun = LOW;
+	static byte noteNumberArray[8];
+	static unsigned long noteDurationArray[8];
+	static byte noteVelocityArray[8];
+	float pitchInHertz;
+
+	switch (dataType) {
+		
+		case 1: // Main Loop Run
 		break;
     
+		case 2: // Note On
+			pitchInHertz = 438.00 * pow(2, ((noteNumber - 70) / 12.00));
+			writeFrequency(pitchInHertz,2,2);
+			writeNoiseType(noteNumber,2);
+			writeAmplitude(noteVelocity,3,2);
+			placeNoteAndVelocityInFirstEmptyArrayPosition(noteNumberArray,
+				noteDurationArray,noteNumber,noteVelocityArray,noteVelocity);
+		break;
+      
 		case 3: // Note Off
-			for (i=0;i<4;i++) {
-				if ((noteNumberArray[i] == noteNumber) && (noteNumber > 0)) {
-					noteNumberArray[i] = 0;
-					noteVelocityArray[i] = 0;
-					noteDurationsArray[i] = 0;
-          
-					switch (i) {
-						case 0: 
-							writeFrequency(0,1,1);
-							writeAmplitude(0,1,1);
-							currentDecayLevel1 = 0;
-						break;
-						
-						case 1: 
-							writeFrequency(0,2,1);
-							writeAmplitude(0,2,1);
-							currentDecayLevel2 = 0;
-						break;
-						
-						case 2: 
-							writeFrequency(0,3,1);
-							writeAmplitude(0,3,1);
-							currentDecayLevel3 = 0;
-						break;
-						
-						case 3: 
-							writeFrequency(0,4,1);
-							writeAmplitude(0,4,1);
-							currentDecayLevel4 = 0;
-						break;
-					}
-					if (testArrayContentsForNoNotes(noteNumberArray) == HIGH) {
-						writeAmplitude(0,1,1);
-						writeAmplitude(0,2,1);
-						writeAmplitude(0,3,1);
-						writeAmplitude(0,4,1);
-						insideRun = LOW;
-						polyEngineRunning = LOW;
-					}
-					break;
-				}
+			eraseThisNoteInArray(noteNumberArray,noteDurationArray,noteNumber);
+			if (mostRecentNoteInArray(noteNumberArray,noteDurationArray) == 0) {
+				writeFrequency(0,2,2);
+				writeAmplitude(0,3,2);
 			}
-		break;
-    
-		case 4: // Pitch Bend (Unused)
-		break;
-		
-		case 5: // CC 1 Change
-			insideCC1 = noteNumber;
-		break;
-		
-		case 6: // CC3 Decay
-			if ((noteNumber == 0) && (decayOn == HIGH)) {
-				decayOn = LOW;
-			}
-    		else if (noteNumber > 0) {
-				decayOn = HIGH;
-				decayInterval = map(noteNumber,0,127,25000,500);
+			else {
+				mainNoiseEngineOne(2,
+				mostRecentNoteInArray(noteNumberArray,noteDurationArray),
+				mostRecentVelocityInArray(noteVelocityArray,noteDurationArray));
 			}
 		break;
 	}
@@ -1110,11 +1306,9 @@ void chip1PolyEngine(byte dataType, byte noteNumber, byte noteVelocity) {
 
 
 
+void leadOneArpeggiator(byte dataType, byte noteNumber, byte noteVelocity, 
+	byte noteNumberFromArray, unsigned long noteDurationFromArray) {
 
-void leadOneArpeggiator(byte dataType, byte noteNumber, 
-	byte noteVelocity, byte noteNumberFromArray, 
-	unsigned long noteDurationFromArray) {
-  
 	static byte arpNoteNumberArray[8];
 	static unsigned long arpNoteDurationArray[8];
 	static boolean arpeggiatorOn;
@@ -1134,14 +1328,14 @@ void leadOneArpeggiator(byte dataType, byte noteNumber,
 				if (elapsedTimeInMillis >= arpeggiatorInterval) {
 					mainLeadOneEngine(3,arpNoteNumberArray[currentArpArrayPosition],
 						0,HIGH,1,0);
-					if (currentArpArrayPosition < 8) {
+					if (currentArpArrayPosition < 7) {
 						currentArpArrayPosition++;
 					}
 					else {
 						currentArpArrayPosition = 0;
 					}
 					while (arpNoteNumberArray[currentArpArrayPosition] == 0) {
-						if (currentArpArrayPosition < 8) {
+						if (currentArpArrayPosition < 7) {
 							currentArpArrayPosition++;
 						}
 						else {
@@ -1153,14 +1347,15 @@ void leadOneArpeggiator(byte dataType, byte noteNumber,
 					previousMillis = millis();
 				}
 			}
-      break;
+		break;
     
 		case 2: // Note On
 			if (arpeggiatorOn == HIGH) {
 				placeNoteInFirstEmptyArrayPosition(arpNoteNumberArray,
 					arpNoteDurationArray,noteNumber);
-				arpeggiatorRunning = testArrayContentsForAtLeastTwoNotes(
-					arpNoteNumberArray) ? HIGH : LOW;
+				arpeggiatorRunning = 
+					testArrayContentsForAtLeastTwoNotes(
+						arpNoteNumberArray) ? HIGH : LOW;
 				if (arpeggiatorRunning == LOW) {
 					mainLeadOneEngine(2,noteNumber,0,HIGH,0,0);
 				}
@@ -1176,8 +1371,8 @@ void leadOneArpeggiator(byte dataType, byte noteNumber,
 				if (arpeggiatorRunning == LOW) {
 					mainLeadOneEngine(3,noteNumber,0,HIGH,0,0);
 					if (testArrayContentsForNoNotes(arpNoteNumberArray) == LOW) {
-						mainLeadOneEngine(2,findSingleNoteInArray(arpNoteNumberArray),
-							0,HIGH,0,0);
+						mainLeadOneEngine(2,findSingleNoteInArray(
+							arpNoteNumberArray),0,HIGH,0,0);
 					}
 				}
 			}
@@ -1209,7 +1404,7 @@ void leadOneArpeggiator(byte dataType, byte noteNumber,
 		case 5: // Changes Arpeggiator Speed
 			arpeggiatorInterval = map(noteNumber,0,127,20,200);
 		break;
-		
+    
 		case 6: // Accepts noteNumberArray and noteDurationArray
 			arpNoteNumberArray[noteNumber] = noteNumberFromArray;
 			arpNoteDurationArray[noteNumber] = noteDurationFromArray;
@@ -1243,8 +1438,7 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 	static unsigned long decayInterval;
 	static boolean decayOn = LOW;
 	static byte currentDecayLevel = 127;
-	static unsigned long previousDecayMicros;
-	static byte leadOneChannel = 3;   
+	static unsigned long previousDecayMicros;   
 	
 	static float insideVibFactor = 1.0;
 	static byte insideCC1 = 0;
@@ -1262,26 +1456,28 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 		case 1: // Main Loop Run
 			if ((insideRun == HIGH) && (portamentoOn == HIGH) && 
 				(portamentoRunning == HIGH) && (decayOn == LOW)) {
-				
+			
 				currentMicros = micros();
 				if ((portamentoDirection == LOW) && (currentMicros - 
 					previousPortamentoChange >= portamentoSpeedInMicros)) {
-					
+				
 					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
 					insidePitchInHertz = insidePitchInHertz - portamentoStepInHertz;
 					previousPortamentoChange = micros();
-					
+            
 					if (insidePitchInHertz <= insideTargetPitchInHertz) {
 						portamentoRunning = LOW;
 						insidePitchInHertz = insideTargetPitchInHertz;
 					}
+            
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,leadOneChannel,1);
+					writeFrequency(insidePitchInHertzAfterFactors,0,3);
 				}
+          
 				if ((portamentoDirection == HIGH) && (currentMicros - 
 					previousPortamentoChange >= portamentoSpeedInMicros)) {
-					
+			
 					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
 					insidePitchInHertz = insidePitchInHertz + portamentoStepInHertz;
 					previousPortamentoChange = micros();
@@ -1290,9 +1486,10 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 						portamentoRunning = LOW;
 						insidePitchInHertz = insideTargetPitchInHertz;
 					}
+            
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,leadOneChannel,1);
+					writeFrequency(insidePitchInHertzAfterFactors,0,3);
 				}
 			}
         
@@ -1300,18 +1497,18 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 				currentVibCountMicros = micros();
 
 				// Limits how often the chip can calculate the sine function.
-				if ((currentVibCountMicros - previousVibCountMicros) >= 
-					sineVibSpeedStepsInMicros) { 
-					
+				if  ((currentVibCountMicros - previousVibCountMicros) >= 
+					sineVibSpeedStepsInMicros) {
+
 					currentMillis = millis();
-					
+						
 					//range of  1 to -1, sclaed to time, factored to 100 to -100
 					vibAmount = sin(((float)currentMillis * 
 						(float)vibRateFactor)/(float)vibRateDivisor) * 100.0; 
-					
+
 					previousVibCountMicros = micros();
-               
-               //Scales vibAmount to very small positive or negative amounts.   
+                  
+					//Scales vibAmount to very small positive or negative amounts
 					vibAmount2 = (float)vibAmount * vibDepth; 
 					modWheelFactor = map(insideCC1, 0, 127, 0, 2000);
 					insideVibFactor = 1.0 + (vibAmount2 * 
@@ -1319,16 +1516,17 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
                   
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,leadOneChannel,1);
+					writeFrequency(insidePitchInHertzAfterFactors,0,3);
 				}
 			}
 			else { 
 				insideVibFactor = 1.0;
 			}
+        
 			if ((decayOn == HIGH) && (insideRun == HIGH)) {
 				currentMicros = micros();
 				if ((currentMicros - previousDecayMicros) >= decayInterval) {
-					writeAmplitude(currentDecayLevel,leadOneChannel,1);
+					writeAmplitude(currentDecayLevel,0,3);
 					if (currentDecayLevel > 0) {
 						currentDecayLevel--;
 					}
@@ -1344,22 +1542,22 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 						pow(2, ((noteNumber - 69) / 12.00));
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,leadOneChannel,1);
-					writeForceAmplitude(127,leadOneChannel,1);
-					writeAmplitude(127,leadOneChannel,1);
+					writeFrequency(insidePitchInHertzAfterFactors,0,3);
+					writeAmplitude(127,0,3);
 					if (arpeggiatorOn == LOW) {
-						placeNoteInFirstEmptyArrayPosition(noteNumberArray,
-							noteDurationArray,noteNumber);
+						placeNoteInFirstEmptyArrayPosition(
+							noteNumberArray,noteDurationArray,noteNumber);
 					}
 					insideRun = HIGH;
 					portamentoRunning = LOW;
 				}
-      		if ((insideRun == HIGH) && (arpeggiatorOn == LOW)) {
+      
+				if ((insideRun == HIGH) && (arpeggiatorOn == LOW)) {
 					insideTargetPitchInHertz = 440.00 * 
 						pow(2, ((noteNumber - 69) / 12.00));
 					portamentoRunning = HIGH;
-					placeNoteInFirstEmptyArrayPosition(noteNumberArray,
-						noteDurationArray,noteNumber);
+					placeNoteInFirstEmptyArrayPosition(
+						noteNumberArray,noteDurationArray,noteNumber);
 					if (insideTargetPitchInHertz > insidePitchInHertz) {
 						portamentoDirection = HIGH;
 					}
@@ -1368,11 +1566,12 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 					}
 				}
 				currentDecayLevel = 127;
+      
 				if ((decayOn == HIGH) && (arpeggiatorOn == LOW)) {
 					insidePitchInHertz = insideTargetPitchInHertz;
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,leadOneChannel,1);
+					writeFrequency(insidePitchInHertzAfterFactors,0,3);
 				}
 			}
 		break;
@@ -1384,23 +1583,25 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 						noteDurationArray,noteNumber);
 					if (mostRecentNoteInArray(noteNumberArray,
 						noteDurationArray) == 0) {
-						
-						writeAmplitude(0,leadOneChannel,1);
-						writeFrequency(0,leadOneChannel,1);
+
+						writeAmplitude(0,0,3);
+						writeFrequency(0,0,3);
 						insideRun = LOW;
 					}
 					else if (decayOn == LOW) {
-						mainLeadOneEngine(2,mostRecentNoteInArray(
-							noteNumberArray,noteDurationArray),0,LOW,0,0);
+						mainLeadOneEngine(2,
+							mostRecentNoteInArray(noteNumberArray,
+							noteDurationArray),0,LOW,0,0);
 					}
 				}
+      
 				if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 0)) {
-					writeAmplitude(0,leadOneChannel,1);
-					writeFrequency(0,leadOneChannel,1);
+					writeAmplitude(0,0,3);
+					writeFrequency(0,0,3);
 					insideRun = LOW;
 				}
       
-				// If notes are coming from main arp sequencer.
+      		// If notes are coming from main arp sequencer.
 				if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 1)) { 
 					insideRun = LOW;
 				}
@@ -1411,7 +1612,7 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 			insideBendFactor = floatData;
 			insidePitchInHertzAfterFactors = insidePitchInHertz * 
 				insideBendFactor * insideVibFactor;
-			writeFrequency(insidePitchInHertzAfterFactors,leadOneChannel,1);
+			writeFrequency(insidePitchInHertzAfterFactors,0,3);
 		break;
     
 		case 5: // ModWheel
@@ -1423,15 +1624,14 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 				decayOn = LOW;
 				portamentoOn = HIGH;
 			}
-			else {
+      	else {
 				decayOn = HIGH;
 				portamentoOn = LOW;
 				decayInterval = map(noteNumber,0,127,25000,500);
 			}
 		break;
     
-		case 7: // Change Shift Register CC6
-			writeShiftRegister(map(noteNumber,0,127,0,7),leadOneChannel,1);
+		case 7: // CC5 Arp Speed Change
 		break;
     
 		case 8: // Arpeggiator Has Turned On Or Off.  Receive or transmit array.
@@ -1452,8 +1652,9 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 		case 9:
 			portamentoSpeedInMicros = map(noteNumber,0,127,20,2000);
 		break;
-	}
+   }
 }
+
 
 
 
@@ -1468,11 +1669,11 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 	unsigned long currentMillis;
 	static unsigned long previousMillis;
 	unsigned long elapsedTimeInMillis;
-	static unsigned int arpeggiatorInterval = 250;
+	static unsigned int arpeggiatorInterval = 20;
 	static byte currentArpArrayPosition;
 	static boolean arpeggiatorRunning = LOW;
 	byte transitionNote;
-  
+	
 	switch (dataType) {
 		case 1: // Main Loop Run
 			if ((arpeggiatorOn == HIGH) && (arpeggiatorRunning == HIGH)) {
@@ -1481,14 +1682,15 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 				if (elapsedTimeInMillis >= arpeggiatorInterval) {
 					mainLeadTwoEngine(3,arpNoteNumberArray[currentArpArrayPosition],
 						0,HIGH,1,0);
-					if (currentArpArrayPosition < 8) {
+					
+					if (currentArpArrayPosition < 7) {
 						currentArpArrayPosition++;
 					}
 					else {
 						currentArpArrayPosition = 0;
 					}
 					while (arpNoteNumberArray[currentArpArrayPosition] == 0) {
-						if (currentArpArrayPosition < 8) {
+						if (currentArpArrayPosition < 7) {
 							currentArpArrayPosition++;
 						}
 						else {
@@ -1500,14 +1702,14 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 					previousMillis = millis();
 				}
 			}
-      break;
+		break;
     
 		case 2: // Note On
 			if (arpeggiatorOn == HIGH) {
 				placeNoteInFirstEmptyArrayPosition(arpNoteNumberArray,
 					arpNoteDurationArray,noteNumber);
-				arpeggiatorRunning = testArrayContentsForAtLeastTwoNotes(
-					arpNoteNumberArray) ? HIGH : LOW;
+				arpeggiatorRunning = 
+					testArrayContentsForAtLeastTwoNotes(arpNoteNumberArray) ? HIGH : LOW;
 				if (arpeggiatorRunning == LOW) {
 					mainLeadTwoEngine(2,noteNumber,0,HIGH,0,0);
 				}
@@ -1522,7 +1724,7 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 					arpNoteNumberArray) ? HIGH : LOW;
 				if (arpeggiatorRunning == LOW) {
 					mainLeadTwoEngine(3,noteNumber,0,HIGH,0,0);
-					if (testArrayContentsForNoNotes(arpNoteNumberArray) == LOW){
+					if (testArrayContentsForNoNotes(arpNoteNumberArray) == LOW) {
 						mainLeadTwoEngine(2,findSingleNoteInArray(arpNoteNumberArray),
 							0,HIGH,0,0);
 					}
@@ -1534,8 +1736,8 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 			if ((noteNumber > 0) && (arpeggiatorOn == LOW)) {
 				arpeggiatorOn = HIGH;
 				mainLeadTwoEngine(8,0,0,HIGH,0,0);
-				arpeggiatorRunning = testArrayContentsForAtLeastTwoNotes(
-					arpNoteNumberArray) ? HIGH : LOW;
+				arpeggiatorRunning = 
+					testArrayContentsForAtLeastTwoNotes(arpNoteNumberArray) ? HIGH : LOW;
 			}
 			if (noteNumber == 0) {
 				arpeggiatorOn = LOW;
@@ -1543,7 +1745,7 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 					0,HIGH,0,0);
 				transitionNote = mostRecentNoteInArray(arpNoteNumberArray,
 					arpNoteDurationArray);
-				if (transitionNote > 0) {
+          	if (transitionNote > 0) {
 					mainLeadTwoEngine(2,transitionNote,0,HIGH,0,0);
 				}
 				for (int i=0;i<8;i++) {
@@ -1554,7 +1756,7 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 		break;
     
 		case 5: // Changes Arpeggiator Speed
-			arpeggiatorInterval = map(noteNumber,0,127,10,250);
+			arpeggiatorInterval = map(noteNumber,0,127,20,200);
 		break;
     
 		case 6: // Accepts noteNumberArray and noteDurationArray
@@ -1568,10 +1770,10 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 
 
 
-void mainLeadTwoEngine(byte dataType, byte noteNumber, 
-	float floatData, boolean noteComingFromArpeggiator, 
-	byte arpNoteNumberFromArray, unsigned long arpNoteDurationFromArray) {
-
+void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData, 
+	boolean noteComingFromArpeggiator, byte arpNoteNumberFromArray, 
+	unsigned long arpNoteDurationFromArray) {
+	
 	static boolean insideRun = LOW;
 	static byte noteNumberArray[8];
 	static unsigned long noteDurationArray[8];
@@ -1590,8 +1792,7 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber,
 	static unsigned long decayInterval;
 	static boolean decayOn = LOW;
 	static byte currentDecayLevel = 127;
-	static unsigned long previousDecayMicros;
-	static byte leadTwoChannel = 4;   
+	static unsigned long previousDecayMicros;   
 	
 	static float insideVibFactor = 1.0;
 	static byte insideCC1 = 0;
@@ -1604,31 +1805,32 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber,
 	static int modWheelFactor = 0;
 	static unsigned long previousVibCountMicros = 0;
 	static unsigned long currentMillis;
-  
-	switch (dataType) {
+
+
+	switch (dataType){
 		case 1: // Main Loop Run
 			if ((insideRun == HIGH) && (portamentoOn == HIGH) && 
 				(portamentoRunning == HIGH) && (decayOn == LOW)) {
-			
+				
 				currentMicros = micros();
 				if ((portamentoDirection == LOW) && (currentMicros - 
 					previousPortamentoChange >= portamentoSpeedInMicros)) {
-            
+					
 					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
 					insidePitchInHertz = insidePitchInHertz - portamentoStepInHertz;
 					previousPortamentoChange = micros();
-            
 					if (insidePitchInHertz <= insideTargetPitchInHertz) {
 						portamentoRunning = LOW;
 						insidePitchInHertz = insideTargetPitchInHertz;
 					}
-					insidePitchInHertzAfterFactors = insidePitchInHertz * 
-						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,leadTwoChannel,1);
+				insidePitchInHertzAfterFactors = insidePitchInHertz * 
+					insideBendFactor * insideVibFactor;
+				writeFrequency(insidePitchInHertzAfterFactors,1,3);
 				}
+          
 				if ((portamentoDirection == HIGH) && (currentMicros - 
 					previousPortamentoChange >= portamentoSpeedInMicros)) {
-					
+				
 					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
 					insidePitchInHertz = insidePitchInHertz + portamentoStepInHertz;
 					previousPortamentoChange = micros();
@@ -1636,9 +1838,9 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber,
 						portamentoRunning = LOW;
 						insidePitchInHertz = insideTargetPitchInHertz;
 					}
-					insidePitchInHertzAfterFactors = insidePitchInHertz * 
-						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,leadTwoChannel,1);
+            	insidePitchInHertzAfterFactors = insidePitchInHertz * 
+            		insideBendFactor * insideVibFactor;
+					writeFrequency(insidePitchInHertzAfterFactors,1,3);
 				}
 			}
 			if (insideCC1 > 0) {
@@ -1646,25 +1848,23 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber,
 
 				// Limits how often the chip can calculate the sine function.
 				if  ((currentVibCountMicros - previousVibCountMicros) >= 
-					sineVibSpeedStepsInMicros) { 
-					
+					sineVibSpeedStepsInMicros) {
+
 					currentMillis = millis();
-					
+
 					//range of  1 to -1, sclaed to time, factored to 100 to -100
 					vibAmount = sin(((float)currentMillis * 
 						(float)vibRateFactor)/(float)vibRateDivisor) * 100.0; 
+                  
 					previousVibCountMicros = micros();
-                  
+
 					//Scales vibAmount to very small positive or negative amounts
-					vibAmount2 = (float)vibAmount * vibDepth; 
-					
+               vibAmount2 = (float)vibAmount * vibDepth;
 					modWheelFactor = map(insideCC1, 0, 127, 0, 2000);
-					insideVibFactor = 1.0 + (vibAmount2 * 
-						((float)modWheelFactor/1000));
-                  
+					insideVibFactor = 1.0 + (vibAmount2 * ((float)modWheelFactor/1000));
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,leadTwoChannel,1);
+					writeFrequency(insidePitchInHertzAfterFactors,1,3);
 				}
 			}
 			else { 
@@ -1673,7 +1873,7 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber,
 			if ((decayOn == HIGH) && (insideRun == HIGH)) {
 				currentMicros = micros();
 				if ((currentMicros - previousDecayMicros) >= decayInterval) {
-					writeAmplitude(currentDecayLevel,leadTwoChannel,1);
+					writeAmplitude(currentDecayLevel,1,3);
 					if (currentDecayLevel > 0) {
 						currentDecayLevel--;
 					}
@@ -1685,20 +1885,19 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber,
 		case 2: // Note On
 			if ((arpeggiatorOn == LOW) || (noteComingFromArpeggiator == HIGH)) {
 				if (insideRun == LOW) {
-					insidePitchInHertz = 440.00 * 
-						pow(2, ((noteNumber - 69) / 12.00));
-					insidePitchInHertzAfterFactors = insidePitchInHertz * 
-						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,leadTwoChannel,1);
-					writeForceAmplitude(127,leadTwoChannel,1);
-					writeAmplitude(127,leadTwoChannel,1);
+					insidePitchInHertz = 440.00 * pow(2, ((noteNumber - 69) / 12.00));
+					insidePitchInHertzAfterFactors = insidePitchInHertz * insideBendFactor * 
+						insideVibFactor;
+					writeFrequency(insidePitchInHertzAfterFactors,1,3);
+					writeAmplitude(127,1,3);
 					if (arpeggiatorOn == LOW) {
-						placeNoteInFirstEmptyArrayPosition(noteNumberArray,
-							noteDurationArray,noteNumber);
+					placeNoteInFirstEmptyArrayPosition(noteNumberArray,
+						noteDurationArray,noteNumber);
 					}
 					insideRun = HIGH;
 					portamentoRunning = LOW;
 				}
+      
 				if ((insideRun == HIGH) && (arpeggiatorOn == LOW)) {
 					insideTargetPitchInHertz = 440.00 * 
 						pow(2, ((noteNumber - 69) / 12.00));
@@ -1717,7 +1916,7 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber,
 					insidePitchInHertz = insideTargetPitchInHertz;
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,leadTwoChannel,1);
+					writeFrequency(insidePitchInHertzAfterFactors,1,3);
 				}
 			}
 		break;
@@ -1730,21 +1929,21 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber,
 					if (mostRecentNoteInArray(noteNumberArray,
 						noteDurationArray) == 0) {
 						
-						writeAmplitude(0,leadTwoChannel,1);
-						writeFrequency(0,leadTwoChannel,1);
+						writeAmplitude(0,1,3);
+						writeFrequency(0,1,3);
 						insideRun = LOW;
 					}
 					else if (decayOn == LOW) {
-						mainLeadTwoEngine(2,mostRecentNoteInArray(noteNumberArray,
-							noteDurationArray),0,LOW,0,0);
+						mainLeadTwoEngine(2,mostRecentNoteInArray(
+							noteNumberArray,noteDurationArray),0,LOW,0,0);
 					}
 				}
 				if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 0)) {
-					writeAmplitude(0,leadTwoChannel,1);
-					writeFrequency(0,leadTwoChannel,1);
+					writeAmplitude(0,1,3);
+					writeFrequency(0,1,3);
 					insideRun = LOW;
 				}
-
+			
 				// If notes are coming from main arp sequencer.
 				if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 1)) { 
 					insideRun = LOW;
@@ -1756,13 +1955,13 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber,
 			insideBendFactor = floatData;
 			insidePitchInHertzAfterFactors = insidePitchInHertz * 
 				insideBendFactor * insideVibFactor;
-			writeFrequency(insidePitchInHertzAfterFactors,leadTwoChannel,1);
+			writeFrequency(insidePitchInHertzAfterFactors,1,3);
 		break;
-		
+    
 		case 5: // ModWheel
 			insideCC1 = noteNumber;
 		break;
-		
+    
 		case 6: // CC3 Decay
 			if ((noteNumber == 0) && (decayOn == HIGH)) {
 				decayOn = LOW;
@@ -1774,26 +1973,26 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber,
 				decayInterval = map(noteNumber,0,127,25000,500);
 			}
 		break;
-		
-		case 7: // Shift Register Change CC6
-			writeShiftRegister(map(noteNumber,0,127,0,7),leadTwoChannel,1);
+    
+		case 7: // CC5 Arp Speed Change
 		break;
-		
+    
 		case 8: // Arpeggiator Has Turned On Or Off.  Receive or transmit array.
 			if (noteComingFromArpeggiator == HIGH) {
 				arpeggiatorOn = HIGH;
 				for (int i=0;i<8;i++) {
-					leadTwoArpeggiator(6,i,0,noteNumberArray[i],noteDurationArray[i]);
+					leadTwoArpeggiator(6,i,0,noteNumberArray[i],
+						noteDurationArray[i]);
 				}
-    		}
+			}
 			else {
 				arpeggiatorOn = LOW;
 				noteNumberArray[noteNumber] = arpNoteNumberFromArray;
 				noteDurationArray[noteNumber] = arpNoteDurationFromArray;
 			}
 		break;
-		
-		case 9:
+
+		case 9: // Portamento Speed
 			portamentoSpeedInMicros = map(noteNumber,0,127,20,2000);
 		break;
 	}
@@ -1808,8 +2007,9 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber,
 //////////////////////////////////////////
 
 
+
 void ledFlash(boolean dataType) {
-  
+	
 	static unsigned long currentMillis; 
 	static boolean ledOn = LOW;
 	static unsigned long ledTurnOffTime; 
@@ -1837,236 +2037,94 @@ void ledFlash(boolean dataType) {
 
 
 
-//////////////////////////////////////////
-//  POKEY COMMANDS, INTERNAL
-//////////////////////////////////////////
-
-
-
-void placeData(byte data) {
-	
-	// Place data at D0-D8 (PORTB)
-	PORTB = data;
-}
-
-
-
-void placeRegister(byte registerAddress) {
-
-	PORTD = (registerAddress & B00001111);
-}
-
-
-
-void writePulseToCS(byte chipNumber) {
-	if (chipNumber == 0) {
-		digitalWrite(CS0chip0pin, LOW);
-		delayMicroseconds(transferHoldTime);
-		digitalWrite(CS0chip0pin, HIGH);
-	}
-	else {
-		digitalWrite(CS0chip1pin, LOW);
-		delayMicroseconds(transferHoldTime);
-		digitalWrite(CS0chip1pin, HIGH);
-	}
-}
-
-
-
-void writeChannelControl(byte dataType, byte data, 
-	byte channel, byte chipNumber) {
-	
-	static byte registerAddress[4] = {1,3,5,7};
-	static byte finalData;
-	static byte shiftSettingsChipOne[4] = {0,0,0,0};
-	static byte amplitudeSettingsChipOne[4] = {0,0,0,0};
-	static byte shiftSettingsChipTwo[4] = {0,0,0,0};
-	static byte amplitudeSettingsChipTwo[4] = {0,0,0,0};
-	
-	switch (chipNumber) {
-		case 0:
-			switch (dataType) {
-				case 0: // Initialization
-					finalData = shiftSettingsChipOne[channel-1] | 
-						amplitudeSettingsChipOne[channel-1];
-				break;
-				case 1: // shiftSetting Only
-					shiftSettingsChipOne[channel-1] = data;
-					finalData = shiftSettingsChipOne[channel-1] | 
-						amplitudeSettingsChipOne[channel-1];
-				break;
-				case 2: // amplitudeSetting Only
-					amplitudeSettingsChipOne[channel-1] = data;
-					finalData = shiftSettingsChipOne[channel-1] | 
-						amplitudeSettingsChipOne[channel-1];
-				break;
-				case 3: // shiftSetting and amplitudeSetting
-					finalData = data;
-				break;
-			}
-		break;
-
-		case 1:
-			switch (dataType) {
-				case 0: // Initialization
-					finalData = shiftSettingsChipTwo[channel-1] | 
-						amplitudeSettingsChipTwo[channel-1];
-				break;
-
-				case 1: // shiftSetting Only
-					shiftSettingsChipTwo[channel-1] = data;
-					finalData = shiftSettingsChipTwo[channel-1] | 
-						amplitudeSettingsChipTwo[channel-1];
-				break;
-
-				case 2: // amplitudeSetting Only
-					amplitudeSettingsChipTwo[channel-1] = data;
-					finalData = shiftSettingsChipTwo[channel-1] | 
-						amplitudeSettingsChipTwo[channel-1];
-				break;
-
-				case 3: // shiftSetting and amplitudeSetting
-					finalData = data;
-				break;
-			}
-		break;
-	}
-	
-	placeRegister(registerAddress[channel-1]);
-	placeData(finalData);
-	writePulseToCS(chipNumber);
-}
-
-
-
 
 
 //////////////////////////////////////////
-//  POKEY COMMANDS, EXTERNAL
+//  SN76489 FUNCTIONS
 //////////////////////////////////////////
 
 
-void writeFrequency(float frequency, byte channel, byte chipNumber) {
-	
-	byte registerAddress[4] = {0,2,4,6};
-	unsigned long halfPeriodInClockCycles;
 
-	if (chipDivider == HIGH) {
-		halfPeriodInClockCycles = 32915.0 / (float)frequency;
-		
-		// With 1.79 MHz chip.
-		// Fout = 63921 / 2N
-		// Fout * N = 31961
-		// N = 31961 / Fout
-		// vs 
-		// Fout = 15699 / 2N
-		// Fout * N = 7850
-		// N = 7850 / Fout
-
-		// With 1.8432 chip
-		// Fout = 65829 / 2N
-		// Fout * N = 32915
-		// N = 32915 / Fout
-		// vs
-		// Fout = 16168 / 2N
-		// Fout * N = 8084
-		// N = 8084 / Fout
-
-	}
-	else {
-		halfPeriodInClockCycles = 8084.0 / (float)frequency;
-	}
-	placeRegister(registerAddress[channel - 1]);
-	placeData(halfPeriodInClockCycles);
-	writePulseToCS(chipNumber);
+void writeDataToSN76489(byte data, byte chipWriteEnablePin) {
+  
+	chipWriteEnablePin = chipWriteEnablePin + 16; 
+	PORTB = data; 
+	digitalWrite(chipWriteEnablePin, LOW);
+	delayMicroseconds(transferHoldTime);
+	digitalWrite(chipWriteEnablePin, HIGH);
 }
 
 
-void writeShiftRegister(byte shiftSetting, byte channel, byte chipNumber) {
-	shiftSetting = shiftSetting << 5;
-	shiftSetting = shiftSetting & B11100000;
-	writeChannelControl(1,shiftSetting,channel,chipNumber);
+
+
+void writeNoiseType(byte noteNumber, byte chipNumber) {
+  
+	byte noiseNumber;
+	static byte noiseTypeArray[] = {
+		B11100000, // C
+		B11100000, // C#
+		B11100001, // D
+		B11100001, // D#
+		B11100010, // E
+		B11100100, // F
+		B11100101, // F#
+		B11100110, // G
+		B11100110, // G#
+		B11100011, // A
+		B11100011, // A#
+		B11100111, // B
+		};
+	noiseNumber = noteNumber % 12;
+	writeDataToSN76489(noiseTypeArray[noiseNumber], chipNumber);
 }
 
 
-void writeAmplitude(byte amplitudeSetting, byte channel, byte chipNumber) {
-	amplitudeSetting = amplitudeSetting >> 3;
-	amplitudeSetting = amplitudeSetting & B00001111;
-	writeChannelControl(2,amplitudeSetting,channel,chipNumber);
+
+
+void writeAmplitude(byte velocity, byte toneBankNumber, byte chipNumber) {
+  
+	byte insideData;
+  
+	// Writes Latch Byte
+	toneBankNumber = toneBankNumber << 5;
+	velocity = 15 - (velocity >> 3);
+	insideData = B10010000 + toneBankNumber + velocity;
+	writeDataToSN76489(insideData, chipNumber);
 }
 
 
-void writeForceAmplitude(byte amplitudeSetting, byte channel, byte chipNumber) {
-	
-	byte registerAddress[4] = {1,3,5,7};
-	
-	amplitudeSetting = amplitudeSetting >> 3;
-	amplitudeSetting = amplitudeSetting & B00001111;
-	amplitudeSetting = amplitudeSetting | B00010000;
-	placeRegister(registerAddress[channel-1]);
-	placeData(amplitudeSetting);
-	writePulseToCS(chipNumber);
+
+
+void writeFrequency(float pitchInHertz, byte toneBankNumber, byte chipNumber) {
+	byte latchByte;
+	byte dataByte;
+	int pitchDataInteger;
+	byte pitchDataFirstByte;
+	byte pitchDataSecondByte;
+	float frequencyInHalfPeriodClockCycles;
+
+	frequencyInHalfPeriodClockCycles = oscillator / (pitchInHertz * 32.0);
+   
+	pitchDataInteger = round(frequencyInHalfPeriodClockCycles);
+	if (pitchDataInteger < 0) {
+		pitchDataInteger = 0;
+	}
+	else if (pitchDataInteger > 1023) {
+		pitchDataInteger = 1023;
+	}
+  
+	// Writes Latch Byte
+	pitchDataFirstByte = pitchDataInteger % 16;
+	toneBankNumber = toneBankNumber << 5;
+	latchByte = B10000000 | toneBankNumber | pitchDataFirstByte; // Forces top bit to 1
+	writeDataToSN76489(latchByte, chipNumber);
+
+	// Writes Data Byte
+	pitchDataSecondByte = pitchDataInteger >> 4;  
+	dataByte = pitchDataSecondByte & B00111111; // Forces top two bits to 0s
+	writeDataToSN76489(dataByte, chipNumber);
 }
 
-
-void writeShiftRegisterAndAmplitude(byte shiftSetting, byte amplitudeSetting, 
-	byte channel, byte chipNumber) {
-	
-	byte combinedSettings;
-
-	shiftSetting = shiftSetting << 5;
-	shiftSetting = shiftSetting & B1110000;
-	amplitudeSetting = amplitudeSetting >> 3;
-	amplitudeSetting = amplitudeSetting & B00001111;
-	combinedSettings = shiftSetting | amplitudeSetting;
-	writeChannelControl(3,combinedSettings,channel,chipNumber);
-}
-
-
-void writeShiftBits(boolean highOrLow, byte chipNumber) {
-
-	placeRegister(8);
-	if ((highOrLow == HIGH) && (chipDivider == LOW)) {
-		placeData(B00000000);
-		shiftBits = HIGH;
-	}
-	if ((highOrLow == HIGH) && (chipDivider == HIGH)) {
-		placeData(B00000001);
-		shiftBits = HIGH;
-	}
-	if ((highOrLow == LOW) && (chipDivider == LOW)) {
-		placeData(B10000000);
-		shiftBits = LOW;
-	}
-	if ((highOrLow == LOW) && (chipDivider == HIGH)) {
-		placeData(B10000001);
-		shiftBits = LOW;
-	}
-	writePulseToCS(chipNumber);
-}
-
-
-void writeChipDivider(boolean highOrLow, byte chipNumber) {
-	
-	placeRegister(8);
-	if ((highOrLow == HIGH) && (shiftBits == LOW)){
-		placeData(B10000001);
-		chipDivider = HIGH;
-	}
-	if ((highOrLow == HIGH) && (shiftBits == HIGH)){
-		placeData(B00000001);
-		chipDivider = HIGH;
-	}
-	if ((highOrLow == LOW) && (shiftBits == LOW)){
-		placeData(B10000000);
-		chipDivider = LOW;
-	}
-	if ((highOrLow == LOW) && (shiftBits == HIGH)){
-		placeData(B00000000);
-		chipDivider = LOW;
-	}
-	writePulseToCS(chipNumber);
-}
 
 
 
@@ -2078,39 +2136,41 @@ void writeChipDivider(boolean highOrLow, byte chipNumber) {
 
 
 void OnNoteOn (byte channel, byte note, byte velocity) {
-	
-	if (noVelocity == HIGH) {
+  
+	if (noVelocity == HIGH){
 		velocity = 127;
 	}
-
-	if (note < 48) {
-		channel = 0xFF;
-	}
-
-	note = note - 24;
   
 	switch (channel) {
 		case 1: //sample engine
-			note = note + 24;
 			mainSampleEngine(2,note,velocity,0);
 		break;
-    
+		
 		case 2:
-			chip0PolyEngine(2,note,velocity);
+			mainPolyEngine(2,note,velocity);
 		break;
-
+		
 		case 3:
-			chip1PolyEngine(2,note,velocity);
+			bassArpeggiator(2,note,velocity,0,0);
+			mainBassEngine(2,note,0,LOW,0,0);
 		break;
-
+		
 		case 4:
+			mainNoiseEngineOne(2,note,velocity);
+		break;
+		
+		case 5:
+    		if (note > 32){
 			leadOneArpeggiator(2,note,velocity,0,0);
 			mainLeadOneEngine(2,note,0,LOW,0,0);
+    		}
 		break;
-    
-		case 5:
-			leadTwoArpeggiator(2,note,velocity,0,0);
-			mainLeadTwoEngine(2,note,0,LOW,0,0);
+
+		case 6:
+			if (note > 32) {
+				leadTwoArpeggiator(2,note,velocity,0,0);
+				mainLeadTwoEngine(2,note,0,LOW,0,0);
+			}
 		break;
 	}
 	ledFlash(2);
@@ -2119,32 +2179,32 @@ void OnNoteOn (byte channel, byte note, byte velocity) {
 
 
 
-void OnNoteOff(byte channel, byte note, byte velocity) {
-	if (note < 48) {
-		channel = 0xFF;
-	}
 
-	note = note - 24;
+void OnNoteOff(byte channel, byte note, byte velocity) {
 	switch (channel) {
 		case 1: //sample engine
-			note = note + 24;
 			mainSampleEngine(3,note,velocity,0);
 		break;
     
 		case 2:
-			chip0PolyEngine(3,note,velocity);
+			mainPolyEngine(3,note,velocity);
 		break;
-
+    
 		case 3:
-			chip1PolyEngine(3,note,velocity);
+			bassArpeggiator(3,note,velocity,0,0);
+			mainBassEngine(3,note,0,LOW,0,0);
 		break;
-
+    
 		case 4:
-			leadOneArpeggiator(3,note,velocity,0,0);
-			mainLeadOneEngine(3,note,0,LOW,0,0);
+			mainNoiseEngineOne(3,note, velocity);
 		break;
     
 		case 5:
+			leadOneArpeggiator(3,note,velocity,0,0);
+			mainLeadOneEngine(3,note,0,LOW,0,0);
+		break;
+
+		case 6:
 			leadTwoArpeggiator(3,note,velocity,0,0);
 			mainLeadTwoEngine(3,note,0,LOW,0,0);
 		break;
@@ -2153,30 +2213,35 @@ void OnNoteOff(byte channel, byte note, byte velocity) {
 
 
 
+
+
 void OnControlChange(byte channel, byte control, byte value) {
   
 	switch(control) {
-		case 1: // Mod wheel, which controls different things for different oscillators.
+		case 1: // Mod wheel, which controls different things for different engines.
 			switch (channel) {
-      		case 1: 
-      			mainSampleEngine(5, value, 0, 0);
-      		break;
-
-      		case 2: 
-      			chip0PolyEngine(5, value, 0);
-      		break;
-      		
-      		case 3: 
-      			chip1PolyEngine(5, value, 0);
-      		break;
-      		
-      		case 4: 
-      			mainLeadOneEngine(5, value, 0, LOW, 0, 0);
-      		break;
-      		
-      		case 5: 
-      			mainLeadTwoEngine(5, value, 0, LOW, 0, 0);
-      		break;
+				case 1: 
+					mainSampleEngine(5, value, 0, 0);
+				break;          
+				
+				case 2: 
+					mainPolyEngine(5, value, 0);
+				break;
+				
+				case 3: 
+					mainBassEngine(5, value, 0, LOW, 0, 0);
+				break;
+				
+				case 4: 
+				break;
+				
+				case 5: 
+					mainLeadOneEngine(5, value, 0, LOW, 0, 0);
+				break;
+				
+				case 6: 
+					mainLeadTwoEngine(5, value, 0, LOW, 0, 0);
+				break;
 			}
 		break;
     
@@ -2186,19 +2251,19 @@ void OnControlChange(byte channel, byte control, byte value) {
     
 		case 3: // Decay
 			switch (channel) {
-				case 2: // chip0Poly Decay
-					chip0PolyEngine(6,value,0);
+				case 2: // mainPoly Decay
+					mainPolyEngine(6,value,0);
 				break;
-				
-				case 3:
-					chip1PolyEngine(6,value,0);
+
+				case 3: // mainBass Decay
+					mainBassEngine(6,value,0,LOW,0,0);
 				break;
-				
-				case 4:
+
+				case 5:
 					mainLeadOneEngine(6,value,0,LOW,0,0);
 				break;
-				
-				case 5: // mainBass Decay
+
+				case 6:
 					mainLeadTwoEngine(6,value,0,LOW,0,0);
 				break;
 			}
@@ -2206,67 +2271,60 @@ void OnControlChange(byte channel, byte control, byte value) {
     
 		case 4: // Arpeggiator On/Off
 			switch (channel) {
-				case 4: // mainLeadOne Engine
+				case 1: // Sample
+				break;
+
+				case 2: // Poly
+				break;
+
+				case 3: // mainBass Engine
+					bassArpeggiator(4,value,0,0,0);
+				break;
+
+				case 4: // mainNoise Engine
+				break;
+
+				case 5: // mainLeadOne Engine
 					leadOneArpeggiator(4,value,0,0,0);
 				break;
-        
-				case 5: // mainBass Engine
+
+				case 6: // mainLeadTwo Engine
 					leadTwoArpeggiator(4,value,0,0,0);
 				break;
 			}
 		break;
     
-		case 5: // Misc
+		case 5: // Arpeggiator Speed
 			switch (channel) {
-				case 4:
+				case 3: // Bass Arpeggiator Speed
+					bassArpeggiator(5,value,0,0,0);
+				break;
+
+				case 5:
 					leadOneArpeggiator(5,value,0,0,0);
 				break;
-        
-				case 5: // Bass Arpeggiator Speed
+
+				case 6:
 					leadTwoArpeggiator(5,value,0,0,0);
 				break;
 			}
 		break;
 
-		case 6: // Shift Register Change
+		case 20: // Porta Speed
 			switch (channel) {
-				case 4:
-					mainLeadOneEngine(7,value,0,LOW,0,0);
+				case 3: // Bass portamento speed
+					mainBassEngine(9,value,0,LOW,0,0);
 				break;
 				
-				case 5:
-					mainLeadTwoEngine(7,value,0,LOW,0,0);
+				case 5: // Lead One portamento speed
+					mainLeadOneEngine(9,value,0,LOW,0,0);
+				break;
+				
+				case 6: // Lead Two portamento speed
+      		mainLeadTwoEngine(9,value,0,LOW,0,0);
 				break;
 			}
 		break;
-
-		case 7: // Shift Bits from 17 to 9 Bits for Chip 0
-			writeShiftBits(map(value,0,127,1,0),0);
-		break;
-
-		case 8: // Clock Divider from 64k to 15k for Chip 0
-			writeChipDivider(map(value,0,127,1,0),0);
-		break;
-
-		case 9: // Shift Bits from 17 to 9 Bits for Chip 1
-			writeShiftBits(map(value,0,127,1,0),1);
-		break;
-
-		case 10: // Clock Divider from 64k to 15k for Chip 1
-			writeChipDivider(map(value,0,127,1,0),1);
-		break;
-
-	case 20: // Porta Speed
-		switch (channel) {
-			case 4: 
-				mainLeadOneEngine(9,value,0,LOW,0,0);
-			break;
-			
-			case 5: 
-				mainLeadTwoEngine(9,value,0,LOW,0,0);
-			break;
-		}
-	break;
 	}
 	ledFlash(2);
 }
@@ -2274,23 +2332,26 @@ void OnControlChange(byte channel, byte control, byte value) {
 
 
 
+
+
 void OnPitchChange(byte channel, int pitch) {
-	
+  
 	float bendRangeInCoefficient;
 	float bendFactor;
-  
 	bendRangeInCoefficient = (pow(2,((float)bendRange/12)));
 	bendFactor = pow(bendRangeInCoefficient,(((float)pitch/8192.0)-1.0));
+  
 	switch (channel) {
 		case 1: 
 			mainSampleEngine(4,0,0,pitch);
 		break;
-		
-		case 4: 
+		case 3: 
+			mainBassEngine(4, 0, bendFactor, LOW, 0, 0);
+		break;
+		case 5: 
 			mainLeadOneEngine(4, 0, bendFactor, LOW, 0, 0);
 		break;
-		
-		case 5: 
+		case 6: 
 			mainLeadTwoEngine(4, 0, bendFactor, LOW, 0, 0);
 		break;
 	}
