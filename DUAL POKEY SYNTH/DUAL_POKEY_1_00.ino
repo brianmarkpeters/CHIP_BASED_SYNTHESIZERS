@@ -76,7 +76,7 @@
 //			- POKEY #1 PIN 30 (!CS0)
 //		- Teensy C7
 //			- POKEY #2 PIN 30 (!CS0)
-//		- Oscillator Signal Out
+//		- Oscillator Signal Out (bottom right with sharp edge on top left)
 //			- POKEY #1 & #2 PIN 7 (02)
 //		- POKEY #1 PIN 37 (Audio Out)
 //			- 10k Resistor #1 Leg 2
