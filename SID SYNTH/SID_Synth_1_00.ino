@@ -1,4 +1,4 @@
-// QUAD SN76489 SYNTHESIZER 1.00
+// SID SYNTH 1.00
 // -Brian Peters
 // www.brianpeters.net
 //
@@ -12,17 +12,22 @@
 //	- MATERIALS
 //
 // 		- 1x Teensy 2.0 Board
-//				(www.pjrc.com)
-//			- 4x SN76489AN 16 PIN DIP
-//				(eBay)
-//			- 1x 1.8432 MHz Full Can Oscillator
-//				(eBay)
-//			- 4x 75k Resistors
-//			- 4x 10uF Electrolytic Capacitors
-//			- 4x 1/4" Audio Jacks (or 3.5mm)
-//			- 1x 60+ Row Breadboard
-//			- 1x USB A to Mini B Cable
-//			- Lots of Wire
+//			(www.pjrc.com)
+//		- 1x MOS 8580 SID 28 PIN DIP
+//			(eBay)
+//		- 1x 1.0 MHz Full Can Oscillator
+//			(eBay)
+//		- 1x 9V Battery (or 9V Adaptor)
+//		- 1x 9V Battery Connector (or 9V Adaptor jack)
+//		- 2x 2200pF Polystyrene Capacitors
+//		- 1x 1k Resistor
+//		- 1x 2.2k Resistor
+//		- 1x 330k Resistor
+//		- 3x 10uF Electrolytic Capacitors
+//		- 1x 1/4" Audio Jack (or 3.5mm)
+//		- 1x 60+ Row Breadboard
+//		- 1x USB A to Mini B Cable
+//		- Lots of Wire
 //
 //
 //	- UPLOADING PROGRAM TO TEENSY (Ideally before wiring everything.)
@@ -34,75 +39,84 @@
 //		- Upload
 //
 //
-//	- CONNECTION LIST (SN76489s ARE INDEXED STARTING AT PIN 1)
+//	- CONNECTION LIST (SID IS INDEXED STARTING AT PIN 1)
 //
 //		- Teensy Vcc
 //			- Breadboard +5V Bus
-//				- SN76489 #1-4 PIN 16 (Vcc)
+//				- SID PIN 25 (Vcc)
 //				- Oscillator +5V (top right with sharp edge on top left)
+//				- 10uF Electrolytic Capacitor #1 Positive Leg
 //		- Teensy GND
 //			- Breadboard GND Bus
-//				- SN76489 #1-4 PIN 8 (GND)
-//				- SN76489 #1-4 PIN 6 (!OE)
-//				- Audio Jack #1-4 Sleeve
-//				- 75k Resistor #1-4 Leg 1
+//				- SID PIN 14 (GND)
+//				- SID PIN 7 (R/!W)
+//				- 10uF Electrolytic Capacitor #1 Negative Leg
+//				- 1k Resistor Leg 1
+//				- 330k Resistor Leg 1
+//				- 2.2k Resistor Leg 1
+//				- 9V Battery/Adaptor Negative Terminal
 //				- Oscillator GND (bottom left with sharp edge on top left)
-//		- Teensy B0
-//			- SN76489 #1-4 PIN 10 (D0)
-//		- Teensy B1
-//			- SN76489 #1-4 PIN 11 (D1)
-//		- Teensy B2
-//			- SN76489 #1-4 PIN 12 (D2)
-//		- Teensy B3
-//			- SN76489 #1-4 PIN 13 (D3)
-//		- Teensy B4
-//			- SN76489 #1-4 PIN 15 (D4)
-//		- Teensy B5
-//			- SN76489 #1-4 PIN 1 (D5)
-//		- Teensy B6
-//			- SN76489 #1-4 PIN 2 (D6)
-//		- Teensy B7
-//			- SN76489 #1-4 PIN 3 (D7)
-//		- Teensy F7
-//			- SN76489 #1 PIN 5 (!WE)
-//		- Teensy F6
-//			- SN76489 #2 PIN 5 (!WE)
-//		- Teensy F5
-//			- SN76489 #3 PIN 5 (!WE)
-//		- Teensy F4
-//			- SN76489 #4 PIN 5 (!WE)
-//		- Oscillator Signal Out (bottom right with sharp edge on top left)
-//			- SN76489 #1-4 PIN 14 (CLOCK)
-//		- SN76489 #1 PIN 7 (SND OUT)
-//			- 10uF Electrolytic Capacitor #1 Positive Leg
-//		- SN76489 #2 PIN 7 (SND OUT)
+//				- Audio Jack Sleeve
+//		- 330K Resistor Leg 2
+//			- SID PIN 26 (EXT IN)
+//		- 1k Resistor Leg 2
+//			- SID PIN 27 (AUDIO)
 //			- 10uF Electrolytic Capacitor #2 Positive Leg
-//		- SN76489 #3 PIN 7 (SND OUT)
-//			- 10uF Electrolytic Capacitor #3 Positive Leg
-//		- SN76489 #4 PIN 7 (SND OUT)
-//			- 10uF Electrolytic Capacitor #4 Positive Leg
-//		- 10uF Electrolytic Capacitor #1 Negative Leg
-//			- 75k Resistor #1 Leg 2
-//			- Audio Jack #1 Tip
 //		- 10uF Electrolytic Capacitor #2 Negative Leg
-//			- 75k Resistor #2 Leg 2
-//			- Audio Jack #2 Tip
-//		- 10uF Electrolytic Capacitor #3 Negative Leg
-//			- 75k Resistor #3 Leg 2
-//			- Audio Jack #3 Tip
-//		- 10uF Electrolytic Capacitor #4 Negative Leg
-//			- 75k Resistor #4 Leg 2
-//			- Audio Jack #4 Tip
+//			- Audio Jack Tip
+//		- 2.2k Resistor Leg 2
+//			- 10uF Electrolytic Capacitor #3 Negative Leg
+//		- 10uF Electrolytic Capacitor #3 Positive Leg
+//			- SID PIN 28 (Vdd)
+//			- 9V Battery/Adaptor Positive Terminal
+//		- SID PIN 1 (CAP 1A)
+//			- 2200pF Polystyrene Capacitor #1 Leg 1
+//		- SID PIN 2 (CAP 1B)
+//			- 2200pF Polystyrene Capacitor #1 Leg 2
+//		- SID PIN 3 (CAP 2A)
+//			- 2200pF Polystyrene Capacitor #2 Leg 1
+//		- SID PIN 4 (CAP 2B)
+//			- 2200pF Polystyrene Capacitor #2 Leg 2
+//		- Oscillator Signal Out (bottom right with sharp edge on top left)
+//			- SID PIN 6 (0 OSC)
+//		- Teensy B0
+//			- SID PIN 15 (D0)
+//		- Teensy B1
+//			- SID PIN 16 (D1)
+//		- Teensy B2
+//			- SID PIN 17 (D2)
+//		- Teensy B3
+//			- SID PIN 18 (D3)
+//		- Teensy B4
+//			- SID PIN 19 (D4)
+//		- Teensy B5
+//			- SID PIN 20 (D5)
+//		- Teensy B6
+//			- SID PIN 21 (D6)
+//		- Teensy B7
+//			- SID PIN 22 (D7)
+//		- Teensy D0
+//			- SID PIN 9 (A0)
+//		- Teensy D1
+//			- SID PIN 10 (A1)
+//		- Teensy D2
+//			- SID PIN 11 (A2)
+//		- Teensy D3
+//			- SID PIN 12 (A3)
+//		- Teensy D4
+//			- SID PIN 13 (A4)
+// 		- Teensy C6
+//			- SID PIN 8 (!CS)
+//
 //
 //
 // PROGRAM STRUCTURE:
 //
-// 	Global Variables
+//		Global Variables
 //		PCM Sample Data
-// 	PCM Lengths
+//		PCM Lengths
 //
-//
-//	setup
+// setup
 // loop
 //
 //
@@ -110,40 +124,43 @@
 //
 //		mostRecentNoteInArray
 //		eraseOldestNoteInArray
+//		eraseOldestNoteInArrayPoly
 //		mostRecentVelocityInArray
 //		placeNoteInFirstEmptyArrayPosition
 //		placeNoteAndVelocityInFirstEmptyArrayPosition
 //		eraseThisNoteInArray
-//		testArrayContentsForAtLeastTwoNotes
+//		testarrayContentsForAtLeastTwoNotes
 //		findSingleNoteInArray
 //		testArrayContentsForNoNotes
+//		testArrayContentsForNoNotesPoly
+//		
 //
-//
-//	OSCILLATOR AND ARPEGGIATOR FUNCTIONS:
+// OSCILLATOR AND ARPEGGIATOR FUNCTIONS:
 //
 //		mainSampleEngine
 //		mainPolyEngine
-//		bassArpeggiator
-//		mainBassEngine
-//		mainNoiseEngineOne
 //		leadOneArpeggiator
 //		mainLeadOneEngine
 //		leadTwoArpeggiator
 //		mainLeadTwoEngine
+//		leadThreeArpeggiator
+//		mainLeadThreeArpeggiator
 //		
 //
-// MISC FUNCTIONS
+// MISC FUNCTIONS:
 //
 //		ledFlash
 //
 //
-// SN76489 FUNCTIONS:
-// 
-//		writeDataToSN76489
-//		writeNoiseType
-//		writeAmplitude
+// SID FUNCTIONS:
+//
 //		writeFrequency
-//		
+//		writePWM
+//		writeWaveform
+//		writeADSR
+//		writeFilter
+//		pulseCS
+//
 //
 // MIDI CALLBACK FUNCTIONS:
 //
@@ -159,14 +176,7 @@
 // functions.
 //
 // All of the functions in the main loop have a 1 as their first argument,
-// which allows them to update their portamento/arpeggiation/tremolo/decay/sample.
-
-
-
-
-
-
-
+// which allows them to update their portamento/arpeggiation/tremolo/sample.
 
 
 
@@ -175,20 +185,25 @@
 //////////////////////////////////////////
 
 
-unsigned long oscillator = 1843200;
-byte transferHoldTime = 24;
+unsigned long clock = 1843200;
+byte transferHoldTime = 1;
 byte bendRange = 12;  // Default bend range
 boolean noVelocity = LOW; // Defaults all velocities to 127
 const float vibRateFactor = 1.0;
 const float vibDepth = 0.0004;
+const byte CSchip0pin = 9;
 
+boolean filterInclusionOne = LOW;
+boolean filterInclusionTwo = LOW;
+boolean filterInclusionThree = LOW;
 
 
 
 
 //////////////////////////////////////////
-//  PCM Sample Data
+//  PCM AUDIO DATA
 //////////////////////////////////////////
+
 
 // 4ks/s, 8 Bit Audio (although 8 bit is converted to 4 bit for playback)
 PROGMEM prog_uchar sampleData[5338] = {
@@ -197,25 +212,25 @@ PROGMEM prog_uchar sampleData[5338] = {
 
 
 unsigned int sampleStarts[] = {
-  0x0,
-  0x310,
-  0x354,
-  0x394,
-  0x597,
-  0x7AD,
-  0x9A8,
-  0xB54,
-  0xC19,
-  0xCBB,
-  0x1215,
-  0x1423,
-  0x14DA,
-  0x9999,
-  0xAAAA,
-  0xBBBB,
-  0xCCCC,
-  0xDDDD,
-  0xEEEE
+	0x0,
+	0x310,
+	0x354,
+	0x394,
+	0x597,
+	0x7AD,
+	0x9A8,
+	0xB54,
+	0xC19,
+	0xCBB,
+	0x1215,
+	0x1423,
+	0x14DA,
+	0x9999,
+	0xAAAA,
+	0xBBBB,
+	0xCCCC,
+	0xDDDD,
+	0xEEEE
 };
 
 
@@ -227,70 +242,57 @@ unsigned int sampleStarts[] = {
 //  SETUP AND LOOP
 //////////////////////////////////////////
 
-
 void setup() {
 	usbMIDI.setHandleNoteOff(OnNoteOff);
 	usbMIDI.setHandleNoteOn(OnNoteOn) ;
 	usbMIDI.setHandleControlChange(OnControlChange) ;
 	usbMIDI.setHandlePitchChange(OnPitchChange);
 
-
 	// Sets all of PORTB as outputs.
 	// (Pins 0,1,2,3,13,14,15,4)
-	// Connected to D0-D7 on SN76489
-	DDRB = DDRB | B11111111; // set the direction for PORTB
-
+	// Connected to D0-D7 on SID
+	DDRB = DDRB | B11111111;
+	
+	// Sets some of PORTD as outputs. 
+	// (Pins 21,20,19,18,17)
+	// Connected to A0-A4 on SID
+	DDRD = DDRD | B01011111;
+	
 	// Write Enable pins
-	// Each connected to !WE on each chip.
-	pinMode(16, OUTPUT);
-	digitalWrite(16, HIGH); 
-	pinMode(17, OUTPUT);
-	digitalWrite(17, HIGH);
-	pinMode(18, OUTPUT); 
-	digitalWrite(18, HIGH);
-	pinMode(19, OUTPUT);
-	digitalWrite(19, HIGH);
+	// Each connected to !CS Pin(s)
+	pinMode(CSchip0pin, OUTPUT); 
+	digitalWrite(CSchip0pin, LOW);  
   
+
 	// LED Pin
 	pinMode(11, OUTPUT);
-  
-  	writeAmplitude(0,3,0);
-	writeAmplitude(0,3,1);
-	writeAmplitude(0,3,2);
-	writeAmplitude(0,3,3);
+	
+	writeFilter(0,0,0);
 
-
-	writeAmplitude(0,0,0);
-	writeAmplitude(0,1,0);
-	writeAmplitude(0,2,0);
-
-	writeAmplitude(0,0,1);
-	writeAmplitude(0,1,1);
-	writeAmplitude(0,2,1);
-
-	writeAmplitude(0,0,2);
-	writeAmplitude(0,1,2);
-	writeAmplitude(0,2,2);
-
-	writeAmplitude(0,0,3);
-	writeAmplitude(0,1,3);
-	writeAmplitude(0,2,3);
-
-
-
-
-
-	byte k;
-  
-	for (byte i=0;i<4;i++) {
-		for (byte j=0;j<3;j++) {
-  			writeAmplitude(127,j,i);
-  			k = j + 1;
-  			writeFrequency(100*k,j,i);
-  			delay(100);
-  			writeAmplitude(0,j,i);
+	for (byte i=1;i<4;i++) {
+  	
+		writePWM(2048,i,0);
+		writeADSR(0xF0,i,0);
+		for (byte j=1;j<4;j++) {
+			writeFrequency(100*j,i,0);
+			writeWaveform(B01000001,i,0);
+			digitalWrite(11,HIGH);
+			delay(40);
+			digitalWrite(11,LOW);
+			delay(40);
 		}
 	}
+	mainSampleEngine(2,57,127,0);
+	for (byte i=1;i<4;i++) {
+		for (byte j=1;j<4;j++) {
+			writeWaveform(B01000000,i,0);
+			writeFrequency(0,i,0);
+		}
+	}
+	while (millis() < 3000) {
+		mainSampleEngine(1,0,0,0);
+	}
+	mainSampleEngine(3,57,127,0);
 }
 
 
@@ -300,16 +302,14 @@ void loop() {
 	usbMIDI.read();
 	ledFlash(1);
 	mainSampleEngine(1,0,0,0);
-	mainPolyEngine(1,0,0);
-	bassArpeggiator(1,0,0,0,0);
-	mainBassEngine(1,0,0,LOW,0,0);
 	leadOneArpeggiator(1,0,0,0,0);
 	mainLeadOneEngine(1,0,0,LOW,0,0);
 	leadTwoArpeggiator(1,0,0,0,0);
 	mainLeadTwoEngine(1,0,0,LOW,0,0);
+	leadThreeArpeggiator(1,0,0,0,0);
+	mainLeadThreeEngine(1,0,0,LOW,0,0);
+	mainPolyEngine(1,0,0);
 }
-
-
 
 
 
@@ -321,12 +321,12 @@ void loop() {
 
 
 byte mostRecentNoteInArray (byte noteNumberArray[8], 
-	unsigned long noteDurationArray[8]){
-  
+	unsigned long noteDurationArray[8]) {
+	
 	byte i = 0;
 	unsigned long mostRecentNoteDuration = 0;
 	byte mostRecentNote = 0;
-
+  
 	for (i=0;i<8;i++) {
 		if (noteDurationArray[i] > mostRecentNoteDuration) {
 			mostRecentNoteDuration = noteDurationArray[i];
@@ -340,12 +340,32 @@ byte mostRecentNoteInArray (byte noteNumberArray[8],
 
 void eraseOldestNoteInArray (byte (&noteNumberArray)[6], 
 	byte (&noteVelocityArray)[6], unsigned long (&noteDurationArray)[6]) {
-
+  
 	byte i = 0;
 	unsigned long oldestDuration = 4294967295;
 	byte oldestArrayPosition = 0;
-	
+  
 	for (i=0;i<6;i++) {
+		if (noteDurationArray[i] < oldestDuration) {
+			oldestDuration = noteDurationArray[i];
+			oldestArrayPosition = i;
+		}
+	}
+	noteNumberArray[oldestArrayPosition] = 0;
+	noteVelocityArray[oldestArrayPosition] = 0;
+	noteDurationArray[oldestArrayPosition] = 0;
+}
+
+
+
+void eraseOldestNoteInArrayPoly (byte (&noteNumberArray)[3], 
+	byte (&noteVelocityArray)[3], unsigned long (&noteDurationArray)[3]) {
+  
+	byte i = 0;
+	unsigned long oldestDuration = 4294967295;
+	byte oldestArrayPosition = 0;
+  
+	for (i=0;i<3;i++) {
 		if (noteDurationArray[i] < oldestDuration) {
 			oldestDuration = noteDurationArray[i];
 			oldestArrayPosition = i;
@@ -358,14 +378,13 @@ void eraseOldestNoteInArray (byte (&noteNumberArray)[6],
   
 
 
-
 byte mostRecentVelocityInArray (byte noteVelocityArray[8], 
 	unsigned long noteDurationArray[8]) {
-	
+  
 	byte i = 0;
 	unsigned long mostRecentNoteDuration = 0;
 	byte mostRecentVelocity = 0;
-	
+  
 	for (i=0;i<8;i++) {
 		if (noteDurationArray[i] > mostRecentNoteDuration) {
 			mostRecentNoteDuration = noteDurationArray[i];
@@ -378,10 +397,9 @@ byte mostRecentVelocityInArray (byte noteVelocityArray[8],
 
 
 
-
 void placeNoteInFirstEmptyArrayPosition(byte (&noteNumberArray)[8], 
 	unsigned long (&noteDurationArray)[8], byte outsideNoteNumber) {
-
+	
 	boolean noteAlreadyStored = LOW;
 	
 	for (int arrayCounter = 0; arrayCounter < 8 ; arrayCounter++) {
@@ -403,11 +421,10 @@ void placeNoteInFirstEmptyArrayPosition(byte (&noteNumberArray)[8],
 
 
 
-
 void placeNoteAndVelocityInFirstEmptyArrayPosition(byte (&noteNumberArray)[8], 
 	unsigned long (&noteDurationArray)[8], byte outsideNoteNumber, 
 	byte (&noteVelocityArray)[8], byte outsideNoteVelocity) {
-
+	
 	boolean noteAlreadyStored = LOW;
 	
 	for (int arrayCounter = 0; arrayCounter < 8 ; arrayCounter++) {
@@ -418,10 +435,10 @@ void placeNoteAndVelocityInFirstEmptyArrayPosition(byte (&noteNumberArray)[8],
 	}
 	if (noteAlreadyStored == LOW) {
 		for (int arrayCounter = 0; arrayCounter < 8; arrayCounter++) {
-			if (noteNumberArray[arrayCounter] == 0){
+			if (noteNumberArray[arrayCounter] == 0) {
 				noteNumberArray[arrayCounter] = outsideNoteNumber;
-            noteDurationArray[arrayCounter] = millis();
-            noteVelocityArray[arrayCounter] = outsideNoteVelocity;
+				noteDurationArray[arrayCounter] = millis();
+				noteVelocityArray[arrayCounter] = outsideNoteVelocity;
 				break;
 			}
 		}
@@ -430,74 +447,21 @@ void placeNoteAndVelocityInFirstEmptyArrayPosition(byte (&noteNumberArray)[8],
 
 
 
-
-
 void eraseThisNoteInArray(byte (&noteNumberArray)[8], 
 	unsigned long (&noteDurationArray)[8], byte outsideNoteNumber) {
-
+  
 	for (int arrayCounter = 0; arrayCounter < 8; arrayCounter++) {
-   	if (noteNumberArray[arrayCounter] == outsideNoteNumber) {
+		if (noteNumberArray[arrayCounter] == outsideNoteNumber) {
 			noteNumberArray[arrayCounter] = 0;
 			noteDurationArray[arrayCounter] = 0;
-      }
+		}
 	}
 }
-
 
 
 
 boolean testArrayContentsForAtLeastTwoNotes (byte noteNumberArray[8]) {
-	byte testArrayContents1 = 0;
-	byte testArrayContents2 = 0;
-	byte i = 0;
-	byte j = 0;
-		
-	while (i < 8) {
-   	if (noteNumberArray[i] > 0) {
-      	testArrayContents1 = noteNumberArray[i];
-   		j = i+1;
-   		while (j < 8) {
-   			if (noteNumberArray[j] > 0) {
-   				testArrayContents2 = noteNumberArray[j];
-					break;
-				}
-				j++;
-      	}
-      	break;
-		}
-		i++;
-	}
-	if ((testArrayContents1 > 0) && (testArrayContents2 > 0)) {
-		return HIGH;
-	}
-	else {
-		return LOW;
-	}
-}
-
-
-
-
-
-byte findSingleNoteInArray (byte noteNumberArray[8]) {
-	byte arrayContents = 0;
-	byte i = 0;
   
-	while (i < 8) {
-		if (noteNumberArray[i] > 0) {
-      	arrayContents = noteNumberArray[i];
-      	break;
-		}
-		i++;
-	}
-	return arrayContents;
-}
-
-
-
-
-
-boolean testArrayContentsForNoNotes (byte noteNumberArray[8]) {
 	byte testArrayContents1 = 0;
 	byte testArrayContents2 = 0;
 	byte i = 0;
@@ -512,12 +476,93 @@ boolean testArrayContentsForNoNotes (byte noteNumberArray[8]) {
 					testArrayContents2 = noteNumberArray[j];
 					break;
 				}
-			j++;
+				j++;
 			}
 			break;
 		}
 		i++;
 	}
+	if ((testArrayContents1 > 0) && (testArrayContents2 > 0)) {
+		return HIGH;
+	}
+	else {
+		return LOW;
+	}
+}
+
+
+
+byte findSingleNoteInArray (byte noteNumberArray[8]) {
+	byte arrayContents = 0;
+	byte i = 0;
+  
+	while (i < 8) {
+		if (noteNumberArray[i] > 0) {
+			arrayContents = noteNumberArray[i];
+			break;
+		}
+		i++;
+	}
+	return arrayContents;
+}
+
+
+
+boolean testArrayContentsForNoNotes (byte noteNumberArray[8]) {
+	
+	byte testArrayContents1 = 0;
+	byte testArrayContents2 = 0;
+	byte i = 0;
+	byte j = 0;
+		
+	while (i < 8) {
+		if (noteNumberArray[i] > 0) {
+			testArrayContents1 = noteNumberArray[i];
+			j = i+1;
+			while (j < 8) {
+				if (noteNumberArray[j] > 0) {
+					testArrayContents2 = noteNumberArray[j];
+					break;
+				}
+				j++;
+			}
+			break;
+		}
+		i++;
+	}
+	if ((testArrayContents1 == 0) && (testArrayContents2 == 0)) {
+		return HIGH;
+	}
+	else {
+		return LOW;
+	}
+}
+
+
+
+
+boolean testArrayContentsForNoNotesPoly (byte noteNumberArray[3]) {
+  
+	byte testArrayContents1 = 0;
+	byte testArrayContents2 = 0;
+	byte i = 0;
+	byte j = 0;
+		
+	while (i < 3) {
+		if (noteNumberArray[i] > 0) {
+			testArrayContents1 = noteNumberArray[i];
+			j = i+1;
+			while (j < 3) {
+				if (noteNumberArray[j] > 0) {
+					testArrayContents2 = noteNumberArray[j];
+					break;
+				}
+				j++;
+			}
+			break;
+		}
+		i++;
+ 	}
 	if ((testArrayContents1 == 0) && (testArrayContents2 == 0)) {
 		return HIGH;
 	}
@@ -535,45 +580,40 @@ boolean testArrayContentsForNoNotes (byte noteNumberArray[8]) {
 //////////////////////////////////////////
 
 
-
 void mainSampleEngine(byte dataType, byte noteNumber, 
-	byte noteVelocity, long longData){
+	byte noteVelocity, long longData) {
  
 	static boolean insideRun = LOW;
-   static unsigned long sampleCounter = 0;
-   static byte sampleCounterIncrement = 1;
-   static unsigned long maxSampleCounter = 400;
-   byte current8bitSampleLevel;
-   byte current4bitSampleLevel;
-   static byte sampleNumber;
-   static byte insideNoteNumber;
-   unsigned long currentMicros;
-   static unsigned long previousMicros;
-   unsigned long elapsedTimeInMicros;
-   static unsigned long sampleRateMicros = 9;
-   static byte sampleIncrementRate = 1;
+	static unsigned long sampleCounter = 0;
+	static byte sampleCounterIncrement = 1;
+	static unsigned long maxSampleCounter = 400;
+	byte current8bitSampleLevel;
+	byte current4bitSampleLevel;
+	static byte sampleNumber;
+	static byte insideNoteNumber;
+	unsigned long currentMicros;
+	static unsigned long previousMicros;
+	unsigned long elapsedTimeInMicros;
+	static unsigned long sampleRateMicros = 250;
+	static byte sampleIncrementRate = 1;
 
 	switch (dataType) {
-   
-   	case 1: // Run in main loop
+		case 1: // Run in main loop
 			if (insideRun == HIGH) {
 				if (sampleCounter >= maxSampleCounter) {
 					sampleCounter = 0;
 					insideRun = LOW;
 				}
 			}
-     
 			if (insideRun == HIGH) {
 				currentMicros = micros();
 				elapsedTimeInMicros = currentMicros - previousMicros;
 				if (elapsedTimeInMicros >= sampleRateMicros) {
-					current8bitSampleLevel = pgm_read_byte_near(sampleData + 
-						(sampleStarts[sampleNumber]) + sampleCounter);
-					current4bitSampleLevel = (current8bitSampleLevel >> 4) & 
-						B00001111;
-					writeDataToSN76489(B10010000 | current4bitSampleLevel, 0);
-					writeDataToSN76489(B10110000 | current4bitSampleLevel, 0);
-					writeDataToSN76489(B11010000 | current4bitSampleLevel, 0);
+					current8bitSampleLevel = pgm_read_byte_near(
+						sampleData + (sampleStarts[sampleNumber]) + sampleCounter);
+					current4bitSampleLevel = 
+						(current8bitSampleLevel >> 4) & B00001111;
+					writeFilter(5, current4bitSampleLevel, 0);   
 					sampleCounter = sampleCounter + sampleIncrementRate;
 					previousMicros = micros();
 				}
@@ -585,19 +625,9 @@ void mainSampleEngine(byte dataType, byte noteNumber,
 				insideNoteNumber = noteNumber;
 				if ((noteNumber >= 48) && (noteNumber <= 66)) {
 					sampleNumber = noteNumber - 48;
-       
 					sampleCounter = 0;
 					maxSampleCounter = sampleStarts[sampleNumber + 1] - 
 						sampleStarts[sampleNumber];
-       
-					writeDataToSN76489(B10000001, 0); 
-					writeDataToSN76489(B00000000, 0); 
-
-					writeDataToSN76489(B10100001, 0);
-					writeDataToSN76489(B00000000, 0); 
-
-					writeDataToSN76489(B11000001, 0);
-					writeDataToSN76489(B00000000, 0);
 					insideRun = HIGH;
 				}
 			}
@@ -611,22 +641,22 @@ void mainSampleEngine(byte dataType, byte noteNumber,
    
 		case 4: // Pitch Bend
 			if (longData == 8192) {
-				sampleIncrementRate = 1;
+				sampleRateMicros = 250;
 			}
 			if (longData <= 8191) {
-				sampleIncrementRate = map(longData,0,8191,10,1);
+				sampleRateMicros = map(longData,0,8191,150,249);
 			}
-			if (longData >= 8193) {
-			sampleIncrementRate = map(longData,8193,16383,1,20);
-				}
+			if (longData >= 8193) {   
+				sampleRateMicros = map(longData,8193,16838,251,75);
+			}
 		break;
    
 		case 5: // CC1 Change
 			if (noteNumber > 0) {
-				sampleRateMicros = 10 * pow(200,((float)noteNumber/127));
+			sampleRateMicros = 251 * pow(200,((float)noteNumber/127));
 			}
 			else {
-				sampleRateMicros = 9;
+				sampleRateMicros = 250;
 			}
 		break;
 	}
@@ -637,40 +667,53 @@ void mainSampleEngine(byte dataType, byte noteNumber,
 
 
 void mainPolyEngine(byte dataType, byte noteNumber, byte noteVelocity) {
-
-	static byte noteNumberArray[6];
-	static byte noteVelocityArray[6];
-	static unsigned long noteDurationsArray[6];
+  
+	static byte noteNumberArray[3];
+	static byte noteVelocityArray[3];
+	static unsigned long noteDurationsArray[3];
 	static boolean insideRun = LOW;
 	static boolean decayOn = LOW;
 	static boolean arrayFull = LOW;
 	static unsigned int decayInterval;
 	static unsigned long previousDecayMicros;
 	unsigned long currentMicros;
-	static byte currentDecayLevel1;
-	static byte currentDecayLevel2;
-	static byte currentDecayLevel3;
-	static byte currentDecayLevel4;
-	static byte currentDecayLevel5;
-	static byte currentDecayLevel6;
+	static byte currentVelocityLevel1;
+	static byte currentVelocityLevel2;
+	static byte currentVelocityLevel3;
 	static boolean tremOn = LOW;
 	static int tremOffset = 0;
 	static unsigned int tremInterval = 1000;
 	static unsigned long previousTremMicros;
 	unsigned long currentMillis;
-	static float tremRateDivisor = 21.0; // Smaller is faster.
+	static float tremRateDivisor = 42.0; // Smaller is faster.
 	static float tremAmount;
 	static float tremAmount2;
-	static int tremMaxDepth = 64;
+	static int tremMaxDepth = 127;
 	static byte insideCC1 = 0;
-	byte i;
-
-
+	static byte polyOneChip = 0;
+	static byte leadOneChannel = 1;
+	static byte leadTwoChannel = 2;
+	static byte leadThreeChannel = 3;
+	
+	static byte attackAmount = 0;
+	static byte decayAmount = 0;
+	static byte sustainAmount = 15;
+	static byte releaseAmount = 0;
+	static unsigned int adsr = 0xF0;
+	
+	static byte basicWaveform = B1000000;
+	static byte basicWaveformNumber = 0;
+	static byte waveformModifier = B0;
+	static byte waveformModifierNumber = 0;
+	static byte waveformCombo = B1000000;
+	static unsigned int pwmAmount = 2048;
+	
+	static byte tremVolume = 15;
 
 	switch (dataType) {
-    
 		case 1: // Main Loop Run
-   		if ((decayOn == HIGH) && (insideRun == HIGH)) {
+      	
+			if ((insideRun == HIGH) && (insideCC1 > 0)) {
 				currentMicros = micros();
 				if ((currentMicros - previousTremMicros) >= tremInterval) {
 					currentMillis = millis();
@@ -678,641 +721,265 @@ void mainPolyEngine(byte dataType, byte noteNumber, byte noteVelocity) {
 						1.0/(float)tremRateDivisor));
 					tremAmount2 = tremAmount * (float)tremMaxDepth;
 					tremOffset = tremAmount2 * ((float)insideCC1/127.0);
+					if (tremOffset < 0) {  // Rectifies negative values.
+						tremVolume = 15 - map(tremOffset,-127,0,15,0);
+					}
+					else {
+						tremVolume = 15 - map(tremOffset,0,127,0,15);
+					}
+					writeFilter(5,tremVolume,0);
 					previousTremMicros = micros();
 				}
-				currentMicros = micros();
-				if ((currentMicros - previousDecayMicros) >= decayInterval) {
-					if (currentDecayLevel1 > 0) {
-						currentDecayLevel1--;
-						writeAmplitude((constrain(
-							currentDecayLevel1+tremOffset,0,127)),0,1);
-					}
-					else {
-						writeAmplitude(0,0,1);
-					}
-					if (currentDecayLevel2 > 0) {
-						currentDecayLevel2--;
-						writeAmplitude((constrain(
-							currentDecayLevel2+tremOffset,0,127)),1,1);            
-					}
-					else {
-						writeAmplitude(0,1,1);
-					}
-					if (currentDecayLevel3 > 0){
-						currentDecayLevel3--;
-						writeAmplitude((constrain(
-							currentDecayLevel3+tremOffset,0,127)),2,1);
-					}
-					else{
-						writeAmplitude(0,2,1);
-					}
-					if (currentDecayLevel4 > 0){
-						currentDecayLevel4--;
-						writeAmplitude((constrain(
-							currentDecayLevel4+tremOffset,0,127)),0,2);
-					}
-					else{
-						writeAmplitude(0,0,2);
-					}
-					if (currentDecayLevel5 > 0){
-						currentDecayLevel5--;
-						writeAmplitude((constrain(
-							currentDecayLevel5+tremOffset,0,127)),1,2);
-					}
-					else{
-						writeAmplitude(0,1,2);
-					}
-					if (currentDecayLevel6 > 0){
-						currentDecayLevel6--;  
-						writeAmplitude((constrain(
-							currentDecayLevel6+tremOffset,0,127)),2,2);
-					}
-					else{
-						writeAmplitude(0,2,2);
-					}
-					previousDecayMicros = micros();
-            }
 			}
-        
-      	if ((decayOn == LOW) && (insideRun == HIGH)) {
-				currentMicros = micros();
-				if ((currentMicros - previousTremMicros) >= tremInterval) {
-					currentMillis = millis();
-          		tremAmount = sin(((float)currentMillis * 
-          			1.0/(float)tremRateDivisor));
-          		tremAmount2 = tremAmount * (float)tremMaxDepth;
-          		tremOffset = tremAmount2 * ((float)insideCC1/127.0);
-          		writeAmplitude((constrain(
-          			currentDecayLevel1+tremOffset,0,127)),0,1);
-          		writeAmplitude((constrain(
-          			currentDecayLevel2+tremOffset,0,127)),1,1);
-          		writeAmplitude((constrain(
-          			currentDecayLevel3+tremOffset,0,127)),2,1);
-          		writeAmplitude((constrain(
-          			currentDecayLevel4+tremOffset,0,127)),0,2);
-          		writeAmplitude((constrain(
-          			currentDecayLevel5+tremOffset,0,127)),1,2);
-          		writeAmplitude((constrain(
-          			currentDecayLevel6+tremOffset,0,127)),2,2);
-          		previousTremMicros = micros();
-				}
-			}
-    
 		break;
     
-
 		case 2: // Note On
 			insideRun = HIGH;
 			arrayFull = HIGH;
-			for (i=0;i<6;i++) {
+			for (byte i=0;i<3;i++) {
 				if (noteNumberArray[i] == 0) {
 					arrayFull = LOW;
 				}
 			}
 			if (arrayFull == HIGH) {
-				eraseOldestNoteInArray(noteNumberArray,noteVelocityArray,
-					noteDurationsArray);    
+				eraseOldestNoteInArrayPoly(noteNumberArray,
+					noteVelocityArray,noteDurationsArray);    
 			}
-      
-			for (i=0;i<6;i++) {
+			for (byte i=0;i<3;i++) {
 				if ((noteNumberArray[i] == 0) && (noteNumber > 0)) {
 					noteNumberArray[i] = noteNumber;
 					noteVelocityArray[i] = noteVelocity;
 					noteDurationsArray[i] = millis();
-          
 					float pitchInHertz;
-					pitchInHertz = 440.00 * pow(2, ((noteNumber - 69) / 12.00));
-                    
+					pitchInHertz = 440.00 * 
+						pow(2, ((noteNumber - 69) / 12.00));
 					switch (i) {
-            		case 0: 
-							writeFrequency(pitchInHertz,0,1);
-							writeAmplitude(noteVelocity,0,1);
-							currentDecayLevel1 = noteVelocity;
-            		break;
-            		
-            		case 1: 
-							writeFrequency(pitchInHertz,1,1);
-							writeAmplitude(noteVelocity,1,1);
-							currentDecayLevel2 = noteVelocity;
-            		break;
-            		
-            		case 2: 
-							writeFrequency(pitchInHertz,2,1);
-							writeAmplitude(noteVelocity,2,1);
-							currentDecayLevel3 = noteVelocity;
-            		break;
-            		
-            		case 3: 
-							writeFrequency(pitchInHertz,0,2);
-							writeAmplitude(noteVelocity,0,2);
-							currentDecayLevel4 = noteVelocity;
-            		break;
-            		
-            		case 4: 
-							writeFrequency(pitchInHertz,1,2);
-							writeAmplitude(noteVelocity,1,2);
-							currentDecayLevel5 = noteVelocity;
-            		break;
-            		
-            		case 5: 
-							writeFrequency(pitchInHertz,2,2);
-							writeAmplitude(noteVelocity,2,2);
-							currentDecayLevel6 = noteVelocity;
-            		break;            
+						case 0: 
+							writeFrequency(pitchInHertz,
+								leadOneChannel,polyOneChip);
+							writeWaveform((waveformCombo | 0x1),
+								leadOneChannel,polyOneChip);
+							currentVelocityLevel1 = noteVelocity;
+						break;
+            
+						case 1: 
+							writeFrequency(pitchInHertz,
+								leadTwoChannel,polyOneChip);
+							writeWaveform((waveformCombo | 0x1),
+								leadTwoChannel,polyOneChip);
+							currentVelocityLevel2 = noteVelocity;
+						break;
+            
+						case 2: 
+							writeFrequency(pitchInHertz,
+								leadThreeChannel,polyOneChip);
+							writeWaveform((waveformCombo | 0x1),
+								leadThreeChannel,polyOneChip);
+							currentVelocityLevel3 = noteVelocity;
+						break;
 					}
-          		break;
+					break;
 				}
 			} 
 		break;
     
 		case 3: // Note Off
-			for (i=0;i<6;i++) {
+			for (byte i=0;i<3;i++) {
 				if ((noteNumberArray[i] == noteNumber) && (noteNumber > 0)) {
 					noteNumberArray[i] = 0;
 					noteVelocityArray[i] = 0;
-					noteDurationsArray[i] = 4294967295;
-          
+					noteDurationsArray[i] = 0;
 					switch (i) {
-            		case 0: 
-							writeFrequency(0,0,1);
-							writeAmplitude(0,0,1);
-							currentDecayLevel1 = 0;
-            		break;
-            		
-            		case 1: 
-							writeFrequency(0,1,1);
-							writeAmplitude(0,1,1);
-							currentDecayLevel2 = 0;
-            		break;
-            		
-            		case 2: 
-							writeFrequency(0,2,1);
-							writeAmplitude(0,2,1);
-							currentDecayLevel3 = 0;
-            		break;
-            		
-            		case 3: 
-							writeFrequency(0,0,2);
-							writeAmplitude(0,0,2);
-							currentDecayLevel4 = 0;
-            		break;
-            		
-            		case 4: 
-							writeFrequency(0,1,2);
-							writeAmplitude(0,1,2);
-							currentDecayLevel5 = 0;
-            		break;
-            		
-            		case 5: 
-							writeFrequency(0,2,2);
-							writeAmplitude(0,2,2);
-							currentDecayLevel6 = 0;
-            		break;            
+						case 0: 
+							writeWaveform((waveformCombo & B11111110),
+								leadOneChannel,polyOneChip);
+						break;
+						
+						case 1: 
+							writeWaveform((waveformCombo & B11111110),
+								leadTwoChannel,polyOneChip);
+						break;
+						
+						case 2: 
+							writeWaveform((waveformCombo & B11111110),
+								leadThreeChannel,polyOneChip);
+						break;
 					}
-          
-					if (testArrayContentsForNoNotes(noteNumberArray) == HIGH) {
-						writeAmplitude(0,0,1);
-						writeAmplitude(0,1,1);
-						writeAmplitude(0,2,1);
-						writeAmplitude(0,0,2);
-						writeAmplitude(0,1,2);
-						writeAmplitude(0,2,2);
+					if (testArrayContentsForNoNotesPoly(noteNumberArray) == HIGH) {
+						writeWaveform((waveformCombo & B11111110),
+							leadOneChannel,polyOneChip);
+						writeWaveform((waveformCombo & B11111110),
+							leadTwoChannel,polyOneChip);
+						writeWaveform((waveformCombo & B11111110),
+							leadThreeChannel,polyOneChip);
 						insideRun = LOW;
 					}
-         	break;
+					break;
 				}
 			}
-      break;
+		break;
     
 		case 4: // Pitch Bend (Unused)
 		break;
     
 		case 5: // CC 1 Change
 			insideCC1 = noteNumber;
-		break;
-    
-		case 6: // CC3 Decay
-			if ((noteNumber == 0) && (decayOn == HIGH)) {
-				decayOn = LOW;
-			}
-			else if (noteNumber > 0) {
-				decayOn = HIGH;
-				decayInterval = map(noteNumber,0,127,25000,500);
-			}
-		break;
-	}
-}
-
-
-
-
-
-
-void bassArpeggiator(byte dataType, byte noteNumber, byte noteVelocity, 
-	byte noteNumberFromArray, unsigned long noteDurationFromArray) {
-  
-	static byte arpNoteNumberArray[8];
-   static unsigned long arpNoteDurationArray[8];
-   static boolean arpeggiatorOn;
-   unsigned long currentMillis;
-   static unsigned long previousMillis;
-   unsigned long elapsedTimeInMillis;
-   static unsigned int arpeggiatorInterval = 250;
-   static byte currentArpArrayPosition;
-   static boolean arpeggiatorRunning = LOW;
-   byte transitionNote;
-
-	switch (dataType) {
-    
-		case 1: // Main Loop Run
-			if ((arpeggiatorOn == HIGH) && (arpeggiatorRunning == HIGH)) {
-				currentMillis = millis();
-				elapsedTimeInMillis = currentMillis - previousMillis;
-				if (elapsedTimeInMillis >= arpeggiatorInterval) {
-					mainBassEngine(3,arpNoteNumberArray[currentArpArrayPosition],
-						0,HIGH,1,0);
-					if (currentArpArrayPosition < 8) {
-						currentArpArrayPosition++;
-					}
-					else {
-						currentArpArrayPosition = 0;
-					}
-					while (arpNoteNumberArray[currentArpArrayPosition] == 0) {
-						if (currentArpArrayPosition < 8) {
-							currentArpArrayPosition++;
-						}
-						else {
-							currentArpArrayPosition = 0;
-						}
-					}
-					mainBassEngine(2,arpNoteNumberArray[currentArpArrayPosition],
-						0,HIGH,1,0);
-					previousMillis = millis();
-				}
-			}
-      break;
-    
-		case 2: // Note On
-			if (arpeggiatorOn == HIGH) {
-				placeNoteInFirstEmptyArrayPosition(arpNoteNumberArray,
-					arpNoteDurationArray,noteNumber);
-				arpeggiatorRunning = 
-					testArrayContentsForAtLeastTwoNotes(
-					arpNoteNumberArray) ? HIGH : LOW;
-				if (arpeggiatorRunning == LOW) {
-					mainBassEngine(2,noteNumber,0,HIGH,0,0);
-				}  
+			if (insideCC1 == 0) {
+				tremVolume = 15;
+				writeFilter(5,tremVolume,0);
 			}
 		break;
     
-		case 3: // Note Off
-			if (arpeggiatorOn == HIGH) {
-				eraseThisNoteInArray(arpNoteNumberArray,
-					arpNoteDurationArray,noteNumber);
-				arpeggiatorRunning = 
-					testArrayContentsForAtLeastTwoNotes(
-					arpNoteNumberArray) ? HIGH : LOW;
-				if (arpeggiatorRunning == LOW) {
-					mainBassEngine(3,noteNumber,0,HIGH,0,0);
-					if (testArrayContentsForNoNotes(arpNoteNumberArray) == LOW) {
-						mainBassEngine(2,findSingleNoteInArray(
-							arpNoteNumberArray),0,HIGH,0,0);
-					}
-				}
-			}
+		case 6: 
 		break;
-    
-		case 4: // CC4: Arpeggiator On/Off
-			if ((noteNumber > 0) && (arpeggiatorOn == LOW)) {
-				arpeggiatorOn = HIGH;
-				mainBassEngine(8,0,0,HIGH,0,0);
-				arpeggiatorRunning = testArrayContentsForAtLeastTwoNotes(
-					arpNoteNumberArray) ? HIGH : LOW;
-			}
-			if (noteNumber == 0) {
-				arpeggiatorOn = LOW;
-				mainBassEngine(3,arpNoteNumberArray[currentArpArrayPosition],
-					0,HIGH,0,0);
-				transitionNote = mostRecentNoteInArray(arpNoteNumberArray,
-					arpNoteDurationArray);
-				if (transitionNote > 0) {
-					mainBassEngine(2,transitionNote,0,HIGH,0,0);
-				}
-				for (int i=0;i<8;i++) {
-					mainBassEngine(8,i,0,LOW,arpNoteNumberArray[i],
-						arpNoteDurationArray[i]);
-				}
-			}
-		break;
-    
-		case 5: // Changes Arpeggiator Speed
-			arpeggiatorInterval = map(noteNumber,0,127,10,250);
-		break;
-    
-		case 6: // Accepts noteNumberArray and noteDurationArray
-			arpNoteNumberArray[noteNumber] = noteNumberFromArray;
-			arpNoteDurationArray[noteNumber] = noteDurationFromArray;
-		break;
-	}
-}
 
-
-void mainBassEngine(byte dataType, byte noteNumber, float floatData, 
-	boolean noteComingFromArpeggiator, byte arpNoteNumberFromArray, 
-	unsigned long arpNoteDurationFromArray) {
-
-	static boolean insideRun = LOW;
-	static byte noteNumberArray[8];
-	static unsigned long noteDurationArray[8];
-	static boolean portamentoOn = HIGH;
-	static boolean portamentoRunning = LOW;
-	static boolean portamentoDirection;
-	unsigned long currentMicros;
-	static unsigned long previousPortamentoChange;
-	static unsigned long portamentoSpeedInMicros = 50;
-	float portamentoStepInHertz;
-	static float insidePitchInHertz;
-	static float insideTargetPitchInHertz;
-	static float insidePitchInHertzAfterFactors;
-	static float insideBendFactor = 1.0;
-	static boolean arpeggiatorOn = LOW;
-	static unsigned long decayInterval;
-	static boolean decayOn = LOW;
-	static byte currentDecayLevel = 127;
-	static unsigned long previousDecayMicros;   
-	
-	static float insideVibFactor = 1.0;
-	static byte insideCC1 = 0;
-	static float vibRateDivisor = 23.0;
-	unsigned long currentVibCountMicros;
-	static unsigned long sineVibSpeedStepsInMicros = 2000;
-	static int vibAmount = 0;
-	static float vibAmount2 = 0.0;
-	static float vibFactor = 1.0;
-	static int modWheelFactor = 0;
-	static unsigned long previousVibCountMicros = 0;
-	static unsigned long currentMillis;
-  
-	switch (dataType) {
-    
-		case 1: // Main Loop Run
-			if ((insideRun == HIGH) && (portamentoOn == HIGH) && 
-				(portamentoRunning == HIGH) && (decayOn == LOW)) {
+		case 9: // Basic Waveform Selection
+			basicWaveformNumber = map(noteNumber,0,127,0,7);
+			switch (basicWaveformNumber) {
+				case 0: // Pulse Only
+					basicWaveform = B1000000;
+				break;
 				
-				currentMicros = micros();
-				if ((portamentoDirection == LOW) && (currentMicros - 
-					previousPortamentoChange >= portamentoSpeedInMicros)) {
-            
-            	portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
-            	insidePitchInHertz = insidePitchInHertz - portamentoStepInHertz;
-            	previousPortamentoChange = micros();
-            
-					if (insidePitchInHertz <= insideTargetPitchInHertz) {
-						portamentoRunning = LOW;
-						insidePitchInHertz = insideTargetPitchInHertz;
-					}
-            
-					insidePitchInHertzAfterFactors = insidePitchInHertz * 
-						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,2,3);
-				}
-          
-				if ((portamentoDirection == HIGH) && (currentMicros - 
-					previousPortamentoChange >= portamentoSpeedInMicros)) {
-            
-					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
-					insidePitchInHertz = insidePitchInHertz + portamentoStepInHertz;
-					previousPortamentoChange = micros();
-            
-					if (insidePitchInHertz >= insideTargetPitchInHertz) {
-						portamentoRunning = LOW;
-						insidePitchInHertz = insideTargetPitchInHertz;
-					}
-            
-					insidePitchInHertzAfterFactors = insidePitchInHertz * 
-						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,2,3);
-				}  
+				case 1: // Saw Only
+					basicWaveform = B100000;
+				break;
+				
+				case 2: // Triangle Only
+					basicWaveform = B10000;
+				break;
+				
+				case 3: // Pulse/Saw
+					basicWaveform = B1100000;
+				break;
+				
+				case 4: // Pulse/Triangle
+					basicWaveform = B1010000;
+				break;
+				
+				case 5: // Saw/Triangle
+					basicWaveform = B110000;
+				break;
+				
+				case 6: // Pulse/Saw/Triangle
+					basicWaveform = B1110000;
+				break;
+				
+				case 7: // Noise
+					basicWaveform = B10000000;
+				break;
 			}
-        
-			if (insideCC1 > 0) {
-				currentVibCountMicros = micros();
-
-				// Limits how often the chip can calculate the sine function.
-				if  ((currentVibCountMicros - previousVibCountMicros) >= 
-					sineVibSpeedStepsInMicros) { 
-					
-					currentMillis = millis();
-
-					//range of  1 to -1, sclaed to time, factored to 100 to -100
-					vibAmount = sin(((float)currentMillis * (float)vibRateFactor) / 
-						(float)vibRateDivisor) * 100.0; 
-
-					previousVibCountMicros = micros();
-
-					//Scales vibAmount to very small positive or negative amounts.                  
-					vibAmount2 = (float)vibAmount * vibDepth;
-
-					modWheelFactor = map(insideCC1, 0, 127, 0, 2000);
-					insideVibFactor = 1.0 + (vibAmount2 * 
-						((float)modWheelFactor/1000));
-                  
-					insidePitchInHertzAfterFactors = insidePitchInHertz * 
-						insideBendFactor * insideVibFactor;
-					
-					writeFrequency(insidePitchInHertzAfterFactors,2,3);
-				}
-			}
-
-			else { 
-				insideVibFactor = 1.0;
-			}
-        
-			if ((decayOn == HIGH) && (insideRun == HIGH)) {
-				currentMicros = micros();
-				if ((currentMicros - previousDecayMicros) >= decayInterval) {
-					writeAmplitude(currentDecayLevel,3,3);
-					if (currentDecayLevel > 0) {
-						currentDecayLevel--;
-					}
-					previousDecayMicros = micros();
-				}
-			}
-		break;
-    
-		case 2: // Note On
-			if ((arpeggiatorOn == LOW) || (noteComingFromArpeggiator == HIGH)) {
-				if (insideRun == LOW) {
-					insidePitchInHertz = 1752.00 * 
-						pow(2, ((noteNumber - 70) / 12.00));
-					insidePitchInHertzAfterFactors = insidePitchInHertz * 
-						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,2,3);
-					writeNoiseType(69,3);
-					writeAmplitude(127,3,3);
-					if (arpeggiatorOn == LOW) {
-						placeNoteInFirstEmptyArrayPosition(
-							noteNumberArray,noteDurationArray,noteNumber);
-					}
-					insideRun = HIGH;
-					portamentoRunning = LOW;
-				}
-      
-				if ((insideRun == HIGH) && (arpeggiatorOn == LOW)) {
-					insideTargetPitchInHertz = 1752.00 * 
-						pow(2, ((noteNumber - 70) / 12.00));
-					portamentoRunning = HIGH;
-					placeNoteInFirstEmptyArrayPosition(
-						noteNumberArray,noteDurationArray,noteNumber);
-					
-					if (insideTargetPitchInHertz > insidePitchInHertz) {
-						portamentoDirection = HIGH;
-					}
-					else {
-						portamentoDirection = LOW;
-					}
-				}
-				currentDecayLevel = 127;
-      
-				if ((decayOn == HIGH) && (arpeggiatorOn == LOW)) {
-					insidePitchInHertz = insideTargetPitchInHertz;
-					
-					insidePitchInHertzAfterFactors = insidePitchInHertz * 
-						insideBendFactor * insideVibFactor;
-					
-					writeFrequency(insidePitchInHertzAfterFactors,2,3);
-				}
-			}
-		break;
-      
-	case 3: // Note Off
-      if ((arpeggiatorOn == LOW) || (noteComingFromArpeggiator == HIGH)){
-      	if (arpeggiatorOn == LOW){
-				eraseThisNoteInArray(noteNumberArray,noteDurationArray,noteNumber);
-				if (mostRecentNoteInArray(noteNumberArray,noteDurationArray) == 0){
-					writeAmplitude(0,3,3);
-					writeAmplitude(0,2,3);
-					writeFrequency(0,2,3);
-					insideRun = LOW;
-				}
-				else if (decayOn == LOW) {
-					mainBassEngine(2,mostRecentNoteInArray(noteNumberArray,
-						noteDurationArray),0,LOW,0,0);
-				}
-			}
-      
-			if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 0)) {
-				writeAmplitude(0,3,3);
-				writeAmplitude(0,2,3);
-				writeFrequency(0,2,3);
-				insideRun = LOW;
-			}
-      
-			// If notes are coming from main arp sequencer.
-			if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 1)) { 
-				insideRun = LOW;
-			}
-      }
-	break;
-    
-	case 4: // Pitch Bend
-		insideBendFactor = floatData;
-		insidePitchInHertzAfterFactors = insidePitchInHertz * 
-			insideBendFactor * insideVibFactor;
-		writeFrequency(insidePitchInHertzAfterFactors,2,3);
-	break;
-    
-	case 5: // ModWheel
-		insideCC1 = noteNumber;
-	break;
-    
-	case 6: // CC3 Decay
-		if ((noteNumber == 0) && (decayOn == HIGH)) {
-			decayOn = LOW;
-			portamentoOn = HIGH;
-		}
-		else {
-			decayOn = HIGH;
-			portamentoOn = LOW;
-			decayInterval = map(noteNumber,0,127,25000,500);
-		}
-	break;
-    
-	case 7: // CC5 Arp Speed Change
-	break;
-    
-	case 8: // Arpeggiator Has Turned On Or Off.  Receive or transmit array.
-		if (noteComingFromArpeggiator == HIGH) {
-			arpeggiatorOn = HIGH;
-			for (int i=0;i<8;i++) {
-				bassArpeggiator(6,i,0,noteNumberArray[i],noteDurationArray[i]);
-			}
-		}
-      
-		else {
-			arpeggiatorOn = LOW;
-			noteNumberArray[noteNumber] = arpNoteNumberFromArray;
-			noteDurationArray[noteNumber] = arpNoteDurationFromArray;
-		}
-	break;
-
-	case 9:
-		portamentoSpeedInMicros = map(noteNumber,0,127,20,2000);
-	break;
-    
-	}
-}
-
-
-
-
-
-void mainNoiseEngineOne(byte dataType, byte noteNumber, byte noteVelocity) {
-	
-	static boolean insideRun = LOW;
-	static byte noteNumberArray[8];
-	static unsigned long noteDurationArray[8];
-	static byte noteVelocityArray[8];
-	float pitchInHertz;
-
-	switch (dataType) {
-		
-		case 1: // Main Loop Run
-		break;
-    
-		case 2: // Note On
-			pitchInHertz = 438.00 * pow(2, ((noteNumber - 70) / 12.00));
-			writeFrequency(pitchInHertz,2,2);
-			writeNoiseType(noteNumber,2);
-			writeAmplitude(noteVelocity,3,2);
-			placeNoteAndVelocityInFirstEmptyArrayPosition(noteNumberArray,
-				noteDurationArray,noteNumber,noteVelocityArray,noteVelocity);
-		break;
-      
-		case 3: // Note Off
-			eraseThisNoteInArray(noteNumberArray,noteDurationArray,noteNumber);
-			if (mostRecentNoteInArray(noteNumberArray,noteDurationArray) == 0) {
-				writeFrequency(0,2,2);
-				writeAmplitude(0,3,2);
+			waveformCombo = basicWaveform | waveformModifier;
+			if (insideRun == HIGH) {
+				writeWaveform((waveformCombo | 0x1),
+					leadOneChannel,polyOneChip);
+				writeWaveform((waveformCombo | 0x1),
+					leadTwoChannel,polyOneChip);
+				writeWaveform((waveformCombo | 0x1),
+					leadThreeChannel,polyOneChip);
 			}
 			else {
-				mainNoiseEngineOne(2,
-				mostRecentNoteInArray(noteNumberArray,noteDurationArray),
-				mostRecentVelocityInArray(noteVelocityArray,noteDurationArray));
+				writeWaveform((waveformCombo & B11111110),
+					leadOneChannel,polyOneChip);
+				writeWaveform((waveformCombo & B11111110),
+					leadTwoChannel,polyOneChip);
+				writeWaveform((waveformCombo & B11111110),
+					leadThreeChannel,polyOneChip);
 			}
+		break;
+
+		case 10: // Waveform Modifier Selection
+			waveformModifierNumber = map(noteNumber,0,127,0,3);
+			switch (waveformModifierNumber) {
+				case 0: // Normal
+					waveformModifier = B0;
+				break;
+				
+				case 1: // Ring Mod
+					waveformModifier = B100;
+				break;
+				
+				case 2: // Sync
+					waveformModifier = B10;
+				break;
+				
+				case 3: // Ring Mod and Sync
+					waveformModifier = B110;
+				break;
+			}
+			waveformCombo = basicWaveform | waveformModifier;
+			if (insideRun == HIGH) {
+				writeWaveform((waveformCombo | 0x1),
+					leadOneChannel,polyOneChip);
+				writeWaveform((waveformCombo | 0x1),
+					leadTwoChannel,polyOneChip);
+				writeWaveform((waveformCombo | 0x1),
+					leadThreeChannel,polyOneChip);
+			}
+			else {
+    			writeWaveform((waveformCombo & B11111110),
+    				leadOneChannel,polyOneChip);
+    			writeWaveform((waveformCombo & B11111110),
+    				leadTwoChannel,polyOneChip);
+    			writeWaveform((waveformCombo & B11111110),
+    				leadThreeChannel,polyOneChip);
+			}
+		break;
+
+		case 11: // Attack Amount
+    		attackAmount = map(noteNumber,0,127,0,15);
+    		adsr = (attackAmount << 12) | (decayAmount << 8) | 
+    			(sustainAmount << 4) | releaseAmount;
+    		writeADSR(adsr,leadOneChannel,polyOneChip);
+    		writeADSR(adsr,leadTwoChannel,polyOneChip);
+    		writeADSR(adsr,leadThreeChannel,polyOneChip);
+		break;
+		
+		case 12: // Decay Amount
+    		decayAmount = map(noteNumber,0,127,0,15);
+    		adsr = (attackAmount << 12) | (decayAmount << 8) | 
+    			(sustainAmount << 4) | releaseAmount;
+    		writeADSR(adsr,leadOneChannel,polyOneChip);
+    		writeADSR(adsr,leadTwoChannel,polyOneChip);
+    		writeADSR(adsr,leadThreeChannel,polyOneChip);
+		break;
+		
+		case 13: // Sustain Amount
+    		sustainAmount = map(noteNumber,0,127,0,15);
+    		adsr = (attackAmount << 12) | (decayAmount << 8) | 
+    			(sustainAmount << 4) | releaseAmount;
+    		writeADSR(adsr,leadOneChannel,polyOneChip);
+    		writeADSR(adsr,leadTwoChannel,polyOneChip);
+    		writeADSR(adsr,leadThreeChannel,polyOneChip);
+		break;
+		
+		case 14: // Release Amount
+    		releaseAmount = map(noteNumber,0,127,0,15);
+    		adsr = (attackAmount << 12) | (decayAmount << 8) | 
+    			(sustainAmount << 4) | releaseAmount;
+    		writeADSR(adsr,leadOneChannel,polyOneChip);
+    		writeADSR(adsr,leadTwoChannel,polyOneChip);
+    		writeADSR(adsr,leadThreeChannel,polyOneChip);
+		break;
+		
+		case 15: // PWM Amount
+    		pwmAmount = map(noteNumber,0,127,2048,0);
+    		writePWM(pwmAmount,leadOneChannel,polyOneChip);
+    		writePWM(pwmAmount,leadTwoChannel,polyOneChip);
+    		writePWM(pwmAmount,leadThreeChannel,polyOneChip);
 		break;
 	}
 }
+
 
 
 
 
 void leadOneArpeggiator(byte dataType, byte noteNumber, byte noteVelocity, 
 	byte noteNumberFromArray, unsigned long noteDurationFromArray) {
-
+  
 	static byte arpNoteNumberArray[8];
 	static unsigned long arpNoteDurationArray[8];
-	static boolean arpeggiatorOn;
+	static boolean arpeggiatorOn = LOW;
 	unsigned long currentMillis;
 	static unsigned long previousMillis;
 	unsigned long elapsedTimeInMillis;
@@ -1354,9 +1021,8 @@ void leadOneArpeggiator(byte dataType, byte noteNumber, byte noteVelocity,
 			if (arpeggiatorOn == HIGH) {
 				placeNoteInFirstEmptyArrayPosition(arpNoteNumberArray,
 					arpNoteDurationArray,noteNumber);
-				arpeggiatorRunning = 
-					testArrayContentsForAtLeastTwoNotes(
-						arpNoteNumberArray) ? HIGH : LOW;
+				arpeggiatorRunning = testArrayContentsForAtLeastTwoNotes(
+					arpNoteNumberArray) ? HIGH : LOW;
 				if (arpeggiatorRunning == LOW) {
 					mainLeadOneEngine(2,noteNumber,0,HIGH,0,0);
 				}
@@ -1372,8 +1038,8 @@ void leadOneArpeggiator(byte dataType, byte noteNumber, byte noteVelocity,
 				if (arpeggiatorRunning == LOW) {
 					mainLeadOneEngine(3,noteNumber,0,HIGH,0,0);
 					if (testArrayContentsForNoNotes(arpNoteNumberArray) == LOW) {
-						mainLeadOneEngine(2,findSingleNoteInArray(
-							arpNoteNumberArray),0,HIGH,0,0);
+						mainLeadOneEngine(2,findSingleNoteInArray(arpNoteNumberArray),
+							0,HIGH,0,0);
 					}
 				}
 			}
@@ -1390,8 +1056,8 @@ void leadOneArpeggiator(byte dataType, byte noteNumber, byte noteVelocity,
 				arpeggiatorOn = LOW;
 				mainLeadOneEngine(3,arpNoteNumberArray[currentArpArrayPosition],
 					0,HIGH,0,0);
-				transitionNote = mostRecentNoteInArray(arpNoteNumberArray,
-					arpNoteDurationArray);
+				transitionNote = mostRecentNoteInArray(
+					arpNoteNumberArray,arpNoteDurationArray);
 				if (transitionNote > 0) {
 					mainLeadOneEngine(2,transitionNote,0,HIGH,0,0);
 				}
@@ -1405,7 +1071,7 @@ void leadOneArpeggiator(byte dataType, byte noteNumber, byte noteVelocity,
 		case 5: // Changes Arpeggiator Speed
 			arpeggiatorInterval = map(noteNumber,0,127,20,200);
 		break;
-    
+		
 		case 6: // Accepts noteNumberArray and noteDurationArray
 			arpNoteNumberArray[noteNumber] = noteNumberFromArray;
 			arpNoteDurationArray[noteNumber] = noteDurationFromArray;
@@ -1416,11 +1082,10 @@ void leadOneArpeggiator(byte dataType, byte noteNumber, byte noteVelocity,
 
 
 
-
-void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData, 
-	boolean noteComingFromArpeggiator, byte arpNoteNumberFromArray, 
-	unsigned long arpNoteDurationFromArray) {
-
+void mainLeadOneEngine(byte dataType, byte noteNumber, 
+	float floatData, boolean noteComingFromArpeggiator, 
+	byte arpNoteNumberFromArray, unsigned long arpNoteDurationFromArray) {
+  	  
 	static boolean insideRun = LOW;
 	static byte noteNumberArray[8];
 	static unsigned long noteDurationArray[8];
@@ -1436,11 +1101,9 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 	static float insidePitchInHertzAfterFactors;
 	static float insideBendFactor = 1.0;
 	static boolean arpeggiatorOn = LOW;
-	static unsigned long decayInterval;
-	static boolean decayOn = LOW;
-	static byte currentDecayLevel = 127;
-	static unsigned long previousDecayMicros;   
-	
+	static const byte leadOneChannel = 1;
+	static const byte leadOneChip = 0;   
+      
 	static float insideVibFactor = 1.0;
 	static byte insideCC1 = 0;
 	static float vibRateDivisor = 23.0;
@@ -1452,16 +1115,30 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 	static int modWheelFactor = 0;
 	static unsigned long previousVibCountMicros = 0;
 	static unsigned long currentMillis;
+	
+	static byte attackAmount = 0;
+	static byte decayAmount = 0;
+	static byte sustainAmount = 15;
+	static byte releaseAmount = 0;
+	static unsigned int adsr = 0xF0;
+
+	static byte basicWaveform = B1000000;
+	byte basicWaveformNumber = 0;
+	static byte waveformModifier = B0;
+	byte waveformModifierNumber = 0;
+	static byte waveformCombo = B1000000;
+	
+	static unsigned int pwmAmount = 2048;
 
 	switch (dataType) {
 		case 1: // Main Loop Run
 			if ((insideRun == HIGH) && (portamentoOn == HIGH) && 
-				(portamentoRunning == HIGH) && (decayOn == LOW)) {
-			
+				(portamentoRunning == HIGH)) {
+				
 				currentMicros = micros();
 				if ((portamentoDirection == LOW) && (currentMicros - 
 					previousPortamentoChange >= portamentoSpeedInMicros)) {
-				
+					
 					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
 					insidePitchInHertz = insidePitchInHertz - portamentoStepInHertz;
 					previousPortamentoChange = micros();
@@ -1473,28 +1150,28 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
             
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,0,3);
+					writeFrequency(insidePitchInHertzAfterFactors,
+						leadOneChannel,leadOneChip);
 				}
           
 				if ((portamentoDirection == HIGH) && (currentMicros - 
 					previousPortamentoChange >= portamentoSpeedInMicros)) {
-			
+					
 					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
 					insidePitchInHertz = insidePitchInHertz + portamentoStepInHertz;
 					previousPortamentoChange = micros();
-            
 					if (insidePitchInHertz >= insideTargetPitchInHertz) {
 						portamentoRunning = LOW;
 						insidePitchInHertz = insideTargetPitchInHertz;
 					}
-            
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,0,3);
+					writeFrequency(insidePitchInHertzAfterFactors,
+						leadOneChannel,leadOneChip);
 				}
 			}
         
-			if (insideCC1 > 0) { 
+			if (insideCC1 > 0) {
 				currentVibCountMicros = micros();
 
 				// Limits how often the chip can calculate the sine function.
@@ -1502,37 +1179,25 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 					sineVibSpeedStepsInMicros) {
 
 					currentMillis = millis();
-						
+					
 					//range of  1 to -1, sclaed to time, factored to 100 to -100
 					vibAmount = sin(((float)currentMillis * 
 						(float)vibRateFactor)/(float)vibRateDivisor) * 100.0; 
-
 					previousVibCountMicros = micros();
-                  
+					
 					//Scales vibAmount to very small positive or negative amounts
 					vibAmount2 = (float)vibAmount * vibDepth; 
 					modWheelFactor = map(insideCC1, 0, 127, 0, 2000);
-					insideVibFactor = 1.0 + (vibAmount2 * 
-						((float)modWheelFactor/1000));
-                  
+					insideVibFactor = 1.0 + (vibAmount2 * ((float)modWheelFactor/1000));
+					
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,0,3);
+					writeFrequency(insidePitchInHertzAfterFactors,
+						leadOneChannel,leadOneChip);
 				}
 			}
 			else { 
 				insideVibFactor = 1.0;
-			}
-        
-			if ((decayOn == HIGH) && (insideRun == HIGH)) {
-				currentMicros = micros();
-				if ((currentMicros - previousDecayMicros) >= decayInterval) {
-					writeAmplitude(currentDecayLevel,0,3);
-					if (currentDecayLevel > 0) {
-						currentDecayLevel--;
-					}
-					previousDecayMicros = micros();
-				}
 			}
 		break;
     
@@ -1543,68 +1208,61 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 						pow(2, ((noteNumber - 69) / 12.00));
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,0,3);
-					writeAmplitude(127,0,3);
+					writeFrequency(insidePitchInHertzAfterFactors,
+						leadOneChannel,leadOneChip);
 					if (arpeggiatorOn == LOW) {
-						placeNoteInFirstEmptyArrayPosition(
-							noteNumberArray,noteDurationArray,noteNumber);
+						placeNoteInFirstEmptyArrayPosition(noteNumberArray,
+							noteDurationArray,noteNumber);
 					}
 					insideRun = HIGH;
+					writeWaveform((waveformCombo | 0x1),
+						leadOneChannel,leadOneChip);
 					portamentoRunning = LOW;
 				}
-      
-				if ((insideRun == HIGH) && (arpeggiatorOn == LOW)) {
+				else if ((insideRun == HIGH) && (arpeggiatorOn == LOW)) {
 					insideTargetPitchInHertz = 440.00 * 
 						pow(2, ((noteNumber - 69) / 12.00));
 					portamentoRunning = HIGH;
-					placeNoteInFirstEmptyArrayPosition(
-						noteNumberArray,noteDurationArray,noteNumber);
+					placeNoteInFirstEmptyArrayPosition(noteNumberArray,
+						noteDurationArray,noteNumber);
 					if (insideTargetPitchInHertz > insidePitchInHertz) {
 						portamentoDirection = HIGH;
 					}
 					else {
 						portamentoDirection = LOW;
 					}
-				}
-				currentDecayLevel = 127;
-      
-				if ((decayOn == HIGH) && (arpeggiatorOn == LOW)) {
-					insidePitchInHertz = insideTargetPitchInHertz;
-					insidePitchInHertzAfterFactors = insidePitchInHertz * 
-						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,0,3);
-				}
+				} 
 			}
 		break;
       
 		case 3: // Note Off
 			if ((arpeggiatorOn == LOW) || (noteComingFromArpeggiator == HIGH)) {
 				if (arpeggiatorOn == LOW) {
-					eraseThisNoteInArray(noteNumberArray,
-						noteDurationArray,noteNumber);
+					eraseThisNoteInArray(noteNumberArray,noteDurationArray,noteNumber);
 					if (mostRecentNoteInArray(noteNumberArray,
 						noteDurationArray) == 0) {
-
-						writeAmplitude(0,0,3);
-						writeFrequency(0,0,3);
+         
 						insideRun = LOW;
+						writeWaveform((waveformCombo & B11111110),
+							leadOneChannel,leadOneChip);
 					}
-					else if (decayOn == LOW) {
-						mainLeadOneEngine(2,
-							mostRecentNoteInArray(noteNumberArray,
+					else {
+						mainLeadOneEngine(2,mostRecentNoteInArray(noteNumberArray,
 							noteDurationArray),0,LOW,0,0);
 					}
 				}
       
 				if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 0)) {
-					writeAmplitude(0,0,3);
-					writeFrequency(0,0,3);
 					insideRun = LOW;
+					writeWaveform((waveformCombo & B11111110),
+						leadOneChannel,leadOneChip);
 				}
-      
-      		// If notes are coming from main arp sequencer.
+     	
+     			// If notes are coming from main arp sequencer.
 				if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 1)) { 
 					insideRun = LOW;
+					writeWaveform((waveformCombo & B11111110),
+						leadOneChannel,leadOneChip);
 				}
 			}
 		break;
@@ -1613,24 +1271,16 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 			insideBendFactor = floatData;
 			insidePitchInHertzAfterFactors = insidePitchInHertz * 
 				insideBendFactor * insideVibFactor;
-			writeFrequency(insidePitchInHertzAfterFactors,0,3);
+			writeFrequency(insidePitchInHertzAfterFactors,
+				leadOneChannel,leadOneChip);
 		break;
     
 		case 5: // ModWheel
-			insideCC1 = noteNumber;
+      	insideCC1 = noteNumber;
 		break;
     
-		case 6: // CC3 Decay
-			if ((noteNumber == 0) && (decayOn == HIGH)) {
-				decayOn = LOW;
-				portamentoOn = HIGH;
-			}
-      	else {
-				decayOn = HIGH;
-				portamentoOn = LOW;
-				decayInterval = map(noteNumber,0,127,25000,500);
-			}
-		break;
+		case 6:
+      break;
     
 		case 7: // CC5 Arp Speed Change
 		break;
@@ -1638,11 +1288,11 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 		case 8: // Arpeggiator Has Turned On Or Off.  Receive or transmit array.
 			if (noteComingFromArpeggiator == HIGH) {
 				arpeggiatorOn = HIGH;
-				for (int i=0;i<8;i++) {
-					leadOneArpeggiator(6,i,0,noteNumberArray[i],
-						noteDurationArray[i]);
+				for (byte i=0;i<8;i++) {
+					leadOneArpeggiator(6,i,0,noteNumberArray[i],noteDurationArray[i]);
 				}
 			}
+      
 			else {
 				arpeggiatorOn = LOW;
 				noteNumberArray[noteNumber] = arpNoteNumberFromArray;
@@ -1650,12 +1300,117 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 			}
 		break;
 
-		case 9:
-			portamentoSpeedInMicros = map(noteNumber,0,127,20,2000);
+		case 9: // Basic Waveform Selection
+			basicWaveformNumber = map(noteNumber,0,127,0,7);
+			switch (basicWaveformNumber) {
+				case 0: // Pulse Only
+					basicWaveform = B1000000;
+				break;
+				
+				case 1: // Saw Only
+					basicWaveform = B100000;
+				break;
+				
+				case 2: // Triangle Only
+					basicWaveform = B10000;
+				break;
+				
+				case 3: // Pulse/Saw
+					basicWaveform = B1100000;
+				break;
+				
+				case 4: // Pulse/Triangle
+					basicWaveform = B1010000;
+				break;
+				
+				case 5: // Saw/Triangle
+					basicWaveform = B110000;
+				break;
+				
+				case 6: // Pulse/Saw/Triangle
+					basicWaveform = B1110000;
+				break;
+				
+				case 7: // Noise
+					basicWaveform = B10000000;
+				break;
+			}
+			waveformCombo = basicWaveform | waveformModifier;
+			if (insideRun == HIGH) {
+				writeWaveform((waveformCombo | 0x1),leadOneChannel,leadOneChip);
+			}
+			else {
+				writeWaveform((waveformCombo & B11111110),leadOneChannel,leadOneChip);
+			}
 		break;
-   }
-}
 
+		case 10: // Waveform Modifier Selection
+			waveformModifierNumber = map(noteNumber,0,127,0,3);
+			switch (waveformModifierNumber) {
+				case 0: // Normal
+					waveformModifier = B0;
+				break;
+				
+				case 1: // Ring Mod
+					waveformModifier = B100;
+				break;
+				
+				case 2: // Sync
+					waveformModifier = B10;
+				break;
+				
+				case 3: // Ring Mod and Sync
+					waveformModifier = B110;
+				break;
+			}
+			waveformCombo = basicWaveform | waveformModifier;
+			if (insideRun == HIGH) {
+				writeWaveform((waveformCombo | 0x1),leadOneChannel,leadOneChip);
+    		}
+			else {
+				writeWaveform((waveformCombo & B11111110),leadOneChannel,leadOneChip);
+			}
+		break;
+
+		case 11: // Attack Amount
+			attackAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadOneChannel,leadOneChip);
+		break;
+
+		case 12: // Decay Amount
+			decayAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadOneChannel,leadOneChip);
+		break;
+
+		case 13: // Sustain Amount
+			sustainAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadOneChannel,leadOneChip);
+		break;
+
+		case 14: // Release Amount
+			releaseAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadOneChannel,leadOneChip);
+		break;
+
+		case 15: // PWM Amount
+			pwmAmount = map(noteNumber,0,127,2048,0);
+			writePWM(pwmAmount,leadOneChannel,leadOneChip);
+		break;
+
+		case 16: // Portamento Speed
+			portamentoSpeedInMicros = map(noteNumber,0,127,1,2000);
+		break;
+    
+	}
+}
 
 
 
@@ -1663,10 +1418,10 @@ void mainLeadOneEngine(byte dataType, byte noteNumber, float floatData,
 void leadTwoArpeggiator(byte dataType, byte noteNumber, 
 	byte noteVelocity, byte noteNumberFromArray, 
 	unsigned long noteDurationFromArray) {
-
+  
 	static byte arpNoteNumberArray[8];
 	static unsigned long arpNoteDurationArray[8];
-	static boolean arpeggiatorOn;
+	static boolean arpeggiatorOn = LOW;
 	unsigned long currentMillis;
 	static unsigned long previousMillis;
 	unsigned long elapsedTimeInMillis;
@@ -1674,16 +1429,15 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 	static byte currentArpArrayPosition;
 	static boolean arpeggiatorRunning = LOW;
 	byte transitionNote;
-	
+
 	switch (dataType) {
 		case 1: // Main Loop Run
-			if ((arpeggiatorOn == HIGH) && (arpeggiatorRunning == HIGH)) {
+      	if ((arpeggiatorOn == HIGH) && (arpeggiatorRunning == HIGH)) {
 				currentMillis = millis();
 				elapsedTimeInMillis = currentMillis - previousMillis;
 				if (elapsedTimeInMillis >= arpeggiatorInterval) {
 					mainLeadTwoEngine(3,arpNoteNumberArray[currentArpArrayPosition],
 						0,HIGH,1,0);
-					
 					if (currentArpArrayPosition < 7) {
 						currentArpArrayPosition++;
 					}
@@ -1709,14 +1463,14 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 			if (arpeggiatorOn == HIGH) {
 				placeNoteInFirstEmptyArrayPosition(arpNoteNumberArray,
 					arpNoteDurationArray,noteNumber);
-				arpeggiatorRunning = 
-					testArrayContentsForAtLeastTwoNotes(arpNoteNumberArray) ? HIGH : LOW;
+				arpeggiatorRunning = testArrayContentsForAtLeastTwoNotes(
+					arpNoteNumberArray) ? HIGH : LOW;
 				if (arpeggiatorRunning == LOW) {
 					mainLeadTwoEngine(2,noteNumber,0,HIGH,0,0);
 				}
 			}
 		break;
-    
+	    
 		case 3: // Note Off
 			if (arpeggiatorOn == HIGH) {
 				eraseThisNoteInArray(arpNoteNumberArray,
@@ -1732,13 +1486,13 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 				}
 			}
 		break;
-    
+	    
 		case 4: // CC4: Arpeggiator On/Off
 			if ((noteNumber > 0) && (arpeggiatorOn == LOW)) {
 				arpeggiatorOn = HIGH;
 				mainLeadTwoEngine(8,0,0,HIGH,0,0);
-				arpeggiatorRunning = 
-					testArrayContentsForAtLeastTwoNotes(arpNoteNumberArray) ? HIGH : LOW;
+				arpeggiatorRunning = testArrayContentsForAtLeastTwoNotes(
+					arpNoteNumberArray) ? HIGH : LOW;
 			}
 			if (noteNumber == 0) {
 				arpeggiatorOn = LOW;
@@ -1746,12 +1500,11 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 					0,HIGH,0,0);
 				transitionNote = mostRecentNoteInArray(arpNoteNumberArray,
 					arpNoteDurationArray);
-          	if (transitionNote > 0) {
+				if (transitionNote > 0) {
 					mainLeadTwoEngine(2,transitionNote,0,HIGH,0,0);
 				}
 				for (int i=0;i<8;i++) {
-					mainLeadTwoEngine(8,i,0,LOW,arpNoteNumberArray[i],
-						arpNoteDurationArray[i]);
+					mainLeadTwoEngine(8,i,0,LOW,arpNoteNumberArray[i],arpNoteDurationArray[i]);
 				}
 			}
 		break;
@@ -1771,10 +1524,11 @@ void leadTwoArpeggiator(byte dataType, byte noteNumber,
 
 
 
+
 void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData, 
 	boolean noteComingFromArpeggiator, byte arpNoteNumberFromArray, 
 	unsigned long arpNoteDurationFromArray) {
-	
+
 	static boolean insideRun = LOW;
 	static byte noteNumberArray[8];
 	static unsigned long noteDurationArray[8];
@@ -1790,11 +1544,13 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData,
 	static float insidePitchInHertzAfterFactors;
 	static float insideBendFactor = 1.0;
 	static boolean arpeggiatorOn = LOW;
-	static unsigned long decayInterval;
-	static boolean decayOn = LOW;
-	static byte currentDecayLevel = 127;
-	static unsigned long previousDecayMicros;   
-	
+	// static unsigned long decayInterval;
+	// static boolean decayOn = LOW;
+	// static byte currentDecayLevel = 127;
+	// static unsigned long previousDecayMicros;
+	static const byte leadTwoChannel = 2;
+	static const byte leadTwoChip = 0;   
+      
 	static float insideVibFactor = 1.0;
 	static byte insideCC1 = 0;
 	static float vibRateDivisor = 23.0;
@@ -1806,12 +1562,25 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData,
 	static int modWheelFactor = 0;
 	static unsigned long previousVibCountMicros = 0;
 	static unsigned long currentMillis;
+	
+	static byte attackAmount = 0;
+	static byte decayAmount = 0;
+	static byte sustainAmount = 15;
+	static byte releaseAmount = 0;
+	static unsigned int adsr = 0xF0;
 
+	static byte basicWaveform = B1000000;
+	byte basicWaveformNumber = 0;
+	static byte waveformModifier = B0;
+	byte waveformModifierNumber = 0;
+	static byte waveformCombo = B1000000;
 
-	switch (dataType){
+	static unsigned int pwmAmount = 2048;
+
+	switch (dataType) {
 		case 1: // Main Loop Run
 			if ((insideRun == HIGH) && (portamentoOn == HIGH) && 
-				(portamentoRunning == HIGH) && (decayOn == LOW)) {
+				(portamentoRunning == HIGH)) {
 				
 				currentMicros = micros();
 				if ((portamentoDirection == LOW) && (currentMicros - 
@@ -1820,18 +1589,19 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData,
 					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
 					insidePitchInHertz = insidePitchInHertz - portamentoStepInHertz;
 					previousPortamentoChange = micros();
+            
 					if (insidePitchInHertz <= insideTargetPitchInHertz) {
 						portamentoRunning = LOW;
 						insidePitchInHertz = insideTargetPitchInHertz;
 					}
-				insidePitchInHertzAfterFactors = insidePitchInHertz * 
-					insideBendFactor * insideVibFactor;
-				writeFrequency(insidePitchInHertzAfterFactors,1,3);
+					insidePitchInHertzAfterFactors = insidePitchInHertz * 
+						insideBendFactor * insideVibFactor;
+					writeFrequency(insidePitchInHertzAfterFactors,
+						leadTwoChannel,leadTwoChip);
 				}
-          
 				if ((portamentoDirection == HIGH) && (currentMicros - 
 					previousPortamentoChange >= portamentoSpeedInMicros)) {
-				
+					
 					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
 					insidePitchInHertz = insidePitchInHertz + portamentoStepInHertz;
 					previousPortamentoChange = micros();
@@ -1839,9 +1609,10 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData,
 						portamentoRunning = LOW;
 						insidePitchInHertz = insideTargetPitchInHertz;
 					}
-            	insidePitchInHertzAfterFactors = insidePitchInHertz * 
-            		insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,1,3);
+					insidePitchInHertzAfterFactors = insidePitchInHertz * 
+						insideBendFactor * insideVibFactor;
+					writeFrequency(insidePitchInHertzAfterFactors,
+						leadTwoChannel,leadTwoChip);
 				}
 			}
 			if (insideCC1 > 0) {
@@ -1849,57 +1620,51 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData,
 
 				// Limits how often the chip can calculate the sine function.
 				if  ((currentVibCountMicros - previousVibCountMicros) >= 
-					sineVibSpeedStepsInMicros) {
-
+					sineVibSpeedStepsInMicros) { 
+					
 					currentMillis = millis();
-
+					
 					//range of  1 to -1, sclaed to time, factored to 100 to -100
 					vibAmount = sin(((float)currentMillis * 
 						(float)vibRateFactor)/(float)vibRateDivisor) * 100.0; 
-                  
 					previousVibCountMicros = micros();
-
+					
 					//Scales vibAmount to very small positive or negative amounts
-               vibAmount2 = (float)vibAmount * vibDepth;
+					vibAmount2 = (float)vibAmount * vibDepth; 
 					modWheelFactor = map(insideCC1, 0, 127, 0, 2000);
-					insideVibFactor = 1.0 + (vibAmount2 * ((float)modWheelFactor/1000));
+					insideVibFactor = 1.0 + (vibAmount2 * 
+						((float)modWheelFactor/1000));
+                  
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,1,3);
+					writeFrequency(insidePitchInHertzAfterFactors,leadTwoChannel,
+						leadTwoChip);
 				}
 			}
 			else { 
 				insideVibFactor = 1.0;
-			}
-			if ((decayOn == HIGH) && (insideRun == HIGH)) {
-				currentMicros = micros();
-				if ((currentMicros - previousDecayMicros) >= decayInterval) {
-					writeAmplitude(currentDecayLevel,1,3);
-					if (currentDecayLevel > 0) {
-						currentDecayLevel--;
-					}
-					previousDecayMicros = micros();
-				}
 			}
 		break;
     
 		case 2: // Note On
 			if ((arpeggiatorOn == LOW) || (noteComingFromArpeggiator == HIGH)) {
 				if (insideRun == LOW) {
-					insidePitchInHertz = 440.00 * pow(2, ((noteNumber - 69) / 12.00));
-					insidePitchInHertzAfterFactors = insidePitchInHertz * insideBendFactor * 
-						insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,1,3);
-					writeAmplitude(127,1,3);
+					insidePitchInHertz = 440.00 * 
+						pow(2, ((noteNumber - 69) / 12.00));
+					insidePitchInHertzAfterFactors = insidePitchInHertz * 
+						insideBendFactor * insideVibFactor;
+					writeFrequency(insidePitchInHertzAfterFactors,
+						leadTwoChannel,leadTwoChip);
 					if (arpeggiatorOn == LOW) {
-					placeNoteInFirstEmptyArrayPosition(noteNumberArray,
-						noteDurationArray,noteNumber);
+						placeNoteInFirstEmptyArrayPosition(noteNumberArray,
+							noteDurationArray,noteNumber);
 					}
 					insideRun = HIGH;
+					writeWaveform((waveformCombo | 0x1),
+						leadTwoChannel,leadTwoChip);
 					portamentoRunning = LOW;
 				}
-      
-				if ((insideRun == HIGH) && (arpeggiatorOn == LOW)) {
+				else if ((insideRun == HIGH) && (arpeggiatorOn == LOW)) {
 					insideTargetPitchInHertz = 440.00 * 
 						pow(2, ((noteNumber - 69) / 12.00));
 					portamentoRunning = HIGH;
@@ -1912,12 +1677,448 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData,
 						portamentoDirection = LOW;
 					}
 				}
-				currentDecayLevel = 127;
-				if ((decayOn == HIGH) && (arpeggiatorOn == LOW)) {
-					insidePitchInHertz = insideTargetPitchInHertz;
+			}
+		break;
+      
+		case 3: // Note Off
+			if ((arpeggiatorOn == LOW) || (noteComingFromArpeggiator == HIGH)) {
+				if (arpeggiatorOn == LOW) {
+					eraseThisNoteInArray(noteNumberArray,
+						noteDurationArray,noteNumber);
+					if (mostRecentNoteInArray(noteNumberArray,
+						noteDurationArray) == 0) {
+						
+						insideRun = LOW;
+						writeWaveform((waveformCombo & B11111110),
+							leadTwoChannel,leadTwoChip);
+					}
+					else {
+						mainLeadTwoEngine(2,mostRecentNoteInArray(noteNumberArray,
+							noteDurationArray),0,LOW,0,0);
+					}
+				}
+				if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 0)) {
+					insideRun = LOW;
+					writeWaveform((waveformCombo & B11111110),
+						leadTwoChannel,leadTwoChip);
+				}
+				
+				// If notes are coming from main arp sequencer.
+				if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 1)) { 
+					insideRun = LOW;
+					writeWaveform((waveformCombo & B11111110),
+						leadTwoChannel,leadTwoChip);
+				}
+			}
+		break;
+    
+		case 4: // Pitch Bend
+			insideBendFactor = floatData;
+			insidePitchInHertzAfterFactors = insidePitchInHertz * 
+				insideBendFactor * insideVibFactor;
+			writeFrequency(insidePitchInHertzAfterFactors,
+				leadTwoChannel,leadTwoChip);
+		break;
+    
+		case 5: // ModWheel
+			insideCC1 = noteNumber;
+		break;
+    
+		case 6: // 
+      break;
+    
+		case 7: // CC5 Arp Speed Change
+		break;
+    
+		case 8: // Arpeggiator Has Turned On Or Off.  Receive or transmit array.
+			if (noteComingFromArpeggiator == HIGH) {
+				arpeggiatorOn = HIGH;
+				for (byte i=0;i<8;i++) {
+					leadTwoArpeggiator(6,i,0,noteNumberArray[i],
+						noteDurationArray[i]);
+				}
+			}
+			else {
+				arpeggiatorOn = LOW;
+				noteNumberArray[noteNumber] = arpNoteNumberFromArray;
+				noteDurationArray[noteNumber] = arpNoteDurationFromArray;
+			}
+		break;
+
+		case 9: // Basic Waveform Selection
+			basicWaveformNumber = map(noteNumber,0,127,0,7);
+			switch (basicWaveformNumber) {
+				case 0: // Pulse Only
+					basicWaveform = B1000000;
+				break;
+				
+				case 1: // Saw Only
+					basicWaveform = B100000;
+				break;
+				
+				case 2: // Triangle Only
+					basicWaveform = B10000;
+				break;
+				
+				case 3: // Pulse/Saw
+					basicWaveform = B1100000;
+				break;
+				
+				case 4: // Pulse/Triangle
+					basicWaveform = B1010000;
+				break;
+				
+				case 5: // Saw/Triangle
+					basicWaveform = B110000;
+				break;
+				
+				case 6: // Pulse/Saw/Triangle
+					basicWaveform = B1110000;
+				break;
+				
+				case 7: // Noise
+					basicWaveform = B10000000;
+				break;
+			}
+			waveformCombo = basicWaveform | waveformModifier;
+			if (insideRun == HIGH) {
+				writeWaveform((waveformCombo | 0x1),
+					leadTwoChannel,leadTwoChip);
+			}
+			else {
+				writeWaveform((waveformCombo & B11111110),
+					leadTwoChannel,leadTwoChip);
+			}
+		break;
+
+		case 10: // Waveform Modifier Selection
+			waveformModifierNumber = map(noteNumber,0,127,0,3);
+			switch (waveformModifierNumber) {
+				case 0: // Normal
+					waveformModifier = B0;
+				break;
+				
+				case 1: // Ring Mod
+					waveformModifier = B100;
+				break;
+				
+				case 2: // Sync
+					waveformModifier = B10;
+				break;
+				
+				case 3: // Ring Mod and Sync
+					waveformModifier = B110;
+				break;
+			}
+			waveformCombo = basicWaveform | waveformModifier;
+			if (insideRun == HIGH) {
+				writeWaveform((waveformCombo | 0x1),
+					leadTwoChannel,leadTwoChip);
+			}
+			else {
+				writeWaveform((waveformCombo & B11111110),
+					leadTwoChannel,leadTwoChip);
+			}
+		break;
+
+		case 11: // Attack Amount
+			attackAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadTwoChannel,leadTwoChip);
+		break;
+
+		case 12: // Decay Amount
+			decayAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadTwoChannel,leadTwoChip);
+		break;
+
+		case 13: // Sustain Amount
+			sustainAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadTwoChannel,leadTwoChip);
+		break;
+
+		case 14: // Release Amount
+			releaseAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadTwoChannel,leadTwoChip);
+		break;
+
+		case 15: // PWM Amount
+			pwmAmount = map(noteNumber,0,127,2048,0);
+			writePWM(pwmAmount,leadTwoChannel,leadTwoChip);
+		break;
+
+		case 16: // Portamento Speed
+			portamentoSpeedInMicros = map(noteNumber,0,127,1,2000);
+		break;
+	}
+}
+
+
+
+
+
+void leadThreeArpeggiator(byte dataType, byte noteNumber, 
+	byte noteVelocity, byte noteNumberFromArray, 
+	unsigned long noteDurationFromArray) {
+ 
+ 	static byte arpNoteNumberArray[8];
+	static unsigned long arpNoteDurationArray[8];
+	static boolean arpeggiatorOn = LOW;
+	unsigned long currentMillis;
+	static unsigned long previousMillis;
+	unsigned long elapsedTimeInMillis;
+	static unsigned int arpeggiatorInterval = 20;
+	static byte currentArpArrayPosition;
+	static boolean arpeggiatorRunning = LOW;
+	byte transitionNote;
+
+	switch (dataType) {
+		case 1: // Main Loop Run
+			if ((arpeggiatorOn == HIGH) && (arpeggiatorRunning == HIGH)) {
+				currentMillis = millis();
+				elapsedTimeInMillis = currentMillis - previousMillis;
+				if (elapsedTimeInMillis >= arpeggiatorInterval) {
+					mainLeadThreeEngine(3,arpNoteNumberArray[currentArpArrayPosition],
+						0,HIGH,1,0);
+					if (currentArpArrayPosition < 7) {
+						currentArpArrayPosition++;
+					}
+					else {
+						currentArpArrayPosition = 0;
+					}
+					while (arpNoteNumberArray[currentArpArrayPosition] == 0) {
+						if (currentArpArrayPosition < 7) {
+							currentArpArrayPosition++;
+						}
+						else {
+							currentArpArrayPosition = 0;
+						}
+					}
+					mainLeadThreeEngine(2,arpNoteNumberArray[currentArpArrayPosition],
+						0,HIGH,1,0);
+					previousMillis = millis();
+				}
+			}
+		break;
+    
+		case 2: // Note On
+			if (arpeggiatorOn == HIGH) {
+				placeNoteInFirstEmptyArrayPosition(arpNoteNumberArray,
+					arpNoteDurationArray,noteNumber);
+				arpeggiatorRunning = testArrayContentsForAtLeastTwoNotes(
+					arpNoteNumberArray) ? HIGH : LOW;
+				if (arpeggiatorRunning == LOW) {
+					mainLeadThreeEngine(2,noteNumber,0,HIGH,0,0);
+				}
+			}
+		break;
+    
+		case 3: // Note Off
+			if (arpeggiatorOn == HIGH) {
+				eraseThisNoteInArray(arpNoteNumberArray,
+					arpNoteDurationArray,noteNumber);
+				arpeggiatorRunning = testArrayContentsForAtLeastTwoNotes(
+					arpNoteNumberArray) ? HIGH : LOW;
+				if (arpeggiatorRunning == LOW) {
+					mainLeadThreeEngine(3,noteNumber,0,HIGH,0,0);
+					if (testArrayContentsForNoNotes(arpNoteNumberArray) == LOW) {
+						mainLeadThreeEngine(2,findSingleNoteInArray(
+							arpNoteNumberArray),0,HIGH,0,0);
+					}
+				}
+			}
+		break;
+    
+		case 4: // CC4: Arpeggiator On/Off
+			if ((noteNumber > 0) && (arpeggiatorOn == LOW)) {
+				arpeggiatorOn = HIGH;
+				mainLeadThreeEngine(8,0,0,HIGH,0,0);
+				arpeggiatorRunning = testArrayContentsForAtLeastTwoNotes(
+					arpNoteNumberArray) ? HIGH : LOW;
+			}
+			if (noteNumber == 0) {
+				arpeggiatorOn = LOW;
+				mainLeadThreeEngine(3,arpNoteNumberArray[currentArpArrayPosition],
+					0,HIGH,0,0);
+				transitionNote = mostRecentNoteInArray(arpNoteNumberArray,
+					arpNoteDurationArray);
+				if (transitionNote > 0) {
+					mainLeadThreeEngine(2,transitionNote,0,HIGH,0,0);
+				}
+				for (int i=0;i<8;i++) {
+					mainLeadThreeEngine(8,i,0,LOW,arpNoteNumberArray[i],
+						arpNoteDurationArray[i]);
+				}
+			}
+		break;
+    
+		case 5: // Changes Arpeggiator Speed
+			arpeggiatorInterval = map(noteNumber,0,127,20,200);
+		break;
+    
+		case 6: // Accepts noteNumberArray and noteDurationArray
+			arpNoteNumberArray[noteNumber] = noteNumberFromArray;
+			arpNoteDurationArray[noteNumber] = noteDurationFromArray;
+		break;
+	}
+}
+
+
+
+
+void mainLeadThreeEngine(byte dataType, byte noteNumber, float floatData, 
+	boolean noteComingFromArpeggiator, byte arpNoteNumberFromArray, 
+	unsigned long arpNoteDurationFromArray) {
+  	  
+	static boolean insideRun = LOW;
+	static byte noteNumberArray[8];
+	static unsigned long noteDurationArray[8];
+	static boolean portamentoOn = HIGH;
+	static boolean portamentoRunning = LOW;
+	static boolean portamentoDirection;
+	unsigned long currentMicros;
+	static unsigned long previousPortamentoChange;
+	static unsigned long portamentoSpeedInMicros = 50;
+	float portamentoStepInHertz;
+	static float insidePitchInHertz;
+	static float insideTargetPitchInHertz;
+	static float insidePitchInHertzAfterFactors;
+	static float insideBendFactor = 1.0;
+	static boolean arpeggiatorOn = LOW;
+	static const byte leadThreeChannel = 3;
+	static const byte leadThreeChip = 0;   
+      
+	static float insideVibFactor = 1.0;
+	static byte insideCC1 = 0;
+	static float vibRateDivisor = 23.0;
+	unsigned long currentVibCountMicros;
+	static unsigned long sineVibSpeedStepsInMicros = 2000;
+	static int vibAmount = 0;
+	static float vibAmount2 = 0.0;
+	static float vibFactor = 1.0;
+	static int modWheelFactor = 0;
+	static unsigned long previousVibCountMicros = 0;
+	static unsigned long currentMillis;
+      
+	static byte attackAmount = 0;
+	static byte decayAmount = 0;
+	static byte sustainAmount = 15;
+	static byte releaseAmount = 0;
+	static unsigned int adsr = 0xF0;
+
+	static byte basicWaveform = B1000000;
+	byte basicWaveformNumber = 0;
+	static byte waveformModifier = B0;
+	byte waveformModifierNumber = 0;
+	static byte waveformCombo = B1000000;
+
+	static unsigned int pwmAmount = 2048;
+
+	switch (dataType) {
+		case 1: // Main Loop Run
+			if ((insideRun == HIGH) && (portamentoOn == HIGH) && 
+				(portamentoRunning == HIGH)) {
+
+				currentMicros = micros();
+				if ((portamentoDirection == LOW) && (currentMicros - 
+					previousPortamentoChange >= portamentoSpeedInMicros)) {
+
+					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
+					insidePitchInHertz = insidePitchInHertz - portamentoStepInHertz;
+					previousPortamentoChange = micros();
+            
+					if (insidePitchInHertz <= insideTargetPitchInHertz) {
+						portamentoRunning = LOW;
+						insidePitchInHertz = insideTargetPitchInHertz;
+					}
 					insidePitchInHertzAfterFactors = insidePitchInHertz * 
 						insideBendFactor * insideVibFactor;
-					writeFrequency(insidePitchInHertzAfterFactors,1,3);
+					writeFrequency(insidePitchInHertzAfterFactors,
+						leadThreeChannel,leadThreeChip);
+				}
+				if ((portamentoDirection == HIGH) && (currentMicros - 
+					previousPortamentoChange >= portamentoSpeedInMicros)) {
+
+					portamentoStepInHertz = 2.0 * (insidePitchInHertz / 1000.0);
+					insidePitchInHertz = insidePitchInHertz + portamentoStepInHertz;
+					previousPortamentoChange = micros();
+					if (insidePitchInHertz >= insideTargetPitchInHertz) {
+						portamentoRunning = LOW;
+						insidePitchInHertz = insideTargetPitchInHertz;
+					}
+					insidePitchInHertzAfterFactors = insidePitchInHertz * 
+						insideBendFactor * insideVibFactor;
+					writeFrequency(insidePitchInHertzAfterFactors,
+						leadThreeChannel,leadThreeChip);
+				}
+			}
+			if (insideCC1 > 0) {  
+				currentVibCountMicros = micros();
+
+				// Limits how often the chip can calculate the sine function.
+				if ((currentVibCountMicros - previousVibCountMicros) >= 
+					sineVibSpeedStepsInMicros) { 
+                  
+					currentMillis = millis();
+					
+					//range of  1 to -1, sclaed to time, factored to 100 to -100
+					vibAmount = sin(((float)currentMillis * 
+						(float)vibRateFactor)/(float)vibRateDivisor) * 100.0; 
+					previousVibCountMicros = micros();
+                  
+					//Scales vibAmount to very small positive or negative amounts
+					vibAmount2 = (float)vibAmount * vibDepth; 
+					modWheelFactor = map(insideCC1, 0, 127, 0, 2000);
+					insideVibFactor = 1.0 + (vibAmount2 * 
+						((float)modWheelFactor/1000));
+					insidePitchInHertzAfterFactors = insidePitchInHertz * 
+						insideBendFactor * insideVibFactor;
+					writeFrequency(insidePitchInHertzAfterFactors,
+						leadThreeChannel,leadThreeChip);
+				}
+			}
+			else { 
+				insideVibFactor = 1.0;
+			}   
+		break;
+    
+		case 2: // Note On
+			if ((arpeggiatorOn == LOW) || (noteComingFromArpeggiator == HIGH)) {
+				if (insideRun == LOW) {
+					insidePitchInHertz = 440.00 * 
+						pow(2, ((noteNumber - 69) / 12.00));
+					insidePitchInHertzAfterFactors = insidePitchInHertz * 
+						insideBendFactor * insideVibFactor;
+					writeFrequency(insidePitchInHertzAfterFactors,
+						leadThreeChannel,leadThreeChip);
+					if (arpeggiatorOn == LOW) {
+						placeNoteInFirstEmptyArrayPosition(noteNumberArray,
+							noteDurationArray,noteNumber);
+					}
+					insideRun = HIGH;
+					writeWaveform((waveformCombo | 0x1),
+						leadThreeChannel,leadThreeChip);
+					portamentoRunning = LOW;
+				}
+				else if ((insideRun == HIGH) && (arpeggiatorOn == LOW)) {
+					insideTargetPitchInHertz = 440.00 * 
+						pow(2, ((noteNumber - 69) / 12.00));
+					portamentoRunning = HIGH;
+					placeNoteInFirstEmptyArrayPosition(noteNumberArray,
+						noteDurationArray,noteNumber);
+					if (insideTargetPitchInHertz > insidePitchInHertz) {
+						portamentoDirection = HIGH;
+					}
+					else {
+						portamentoDirection = LOW;
+					}
 				}
 			}
 		break;
@@ -1930,24 +2131,26 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData,
 					if (mostRecentNoteInArray(noteNumberArray,
 						noteDurationArray) == 0) {
 						
-						writeAmplitude(0,1,3);
-						writeFrequency(0,1,3);
 						insideRun = LOW;
+						writeWaveform((waveformCombo & B11111110),
+							leadThreeChannel,leadThreeChip);
 					}
-					else if (decayOn == LOW) {
-						mainLeadTwoEngine(2,mostRecentNoteInArray(
-							noteNumberArray,noteDurationArray),0,LOW,0,0);
+					else {
+						mainLeadThreeEngine(2,mostRecentNoteInArray(noteNumberArray,
+							noteDurationArray),0,LOW,0,0);
 					}
 				}
 				if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 0)) {
-					writeAmplitude(0,1,3);
-					writeFrequency(0,1,3);
 					insideRun = LOW;
+					writeWaveform((waveformCombo & B11111110),
+						leadThreeChannel,leadThreeChip);
 				}
 			
 				// If notes are coming from main arp sequencer.
 				if ((arpeggiatorOn == HIGH) && (arpNoteNumberFromArray == 1)) { 
 					insideRun = LOW;
+					writeWaveform((waveformCombo & B11111110),
+						leadThreeChannel,leadThreeChip);
 				}
 			}
 		break;
@@ -1956,33 +2159,25 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData,
 			insideBendFactor = floatData;
 			insidePitchInHertzAfterFactors = insidePitchInHertz * 
 				insideBendFactor * insideVibFactor;
-			writeFrequency(insidePitchInHertzAfterFactors,1,3);
+			writeFrequency(insidePitchInHertzAfterFactors,
+				leadThreeChannel,leadThreeChip);
 		break;
     
 		case 5: // ModWheel
-			insideCC1 = noteNumber;
+      	insideCC1 = noteNumber;
 		break;
     
-		case 6: // CC3 Decay
-			if ((noteNumber == 0) && (decayOn == HIGH)) {
-				decayOn = LOW;
-				portamentoOn = HIGH;
-			}
-			else {
-				decayOn = HIGH;
-				portamentoOn = LOW;
-				decayInterval = map(noteNumber,0,127,25000,500);
-			}
-		break;
+		case 6: // 
+      break;
     
 		case 7: // CC5 Arp Speed Change
 		break;
     
 		case 8: // Arpeggiator Has Turned On Or Off.  Receive or transmit array.
-			if (noteComingFromArpeggiator == HIGH) {
+      	if (noteComingFromArpeggiator == HIGH) {
 				arpeggiatorOn = HIGH;
-				for (int i=0;i<8;i++) {
-					leadTwoArpeggiator(6,i,0,noteNumberArray[i],
+				for (byte i=0;i<8;i++) {
+					leadThreeArpeggiator(6,i,0,noteNumberArray[i],
 						noteDurationArray[i]);
 				}
 			}
@@ -1993,8 +2188,117 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData,
 			}
 		break;
 
-		case 9: // Portamento Speed
-			portamentoSpeedInMicros = map(noteNumber,0,127,20,2000);
+		case 9: // Basic Waveform Selection
+			basicWaveformNumber = map(noteNumber,0,127,0,7);
+			switch (basicWaveformNumber) {
+				case 0: // Pulse Only
+					basicWaveform = B1000000;
+				break;
+				
+				case 1: // Saw Only
+					basicWaveform = B100000;
+				break;
+				
+				case 2: // Triangle Only
+					basicWaveform = B10000;
+				break;
+				
+				case 3: // Pulse/Saw
+					basicWaveform = B1100000;
+				break;
+				
+				case 4: // Pulse/Triangle
+					basicWaveform = B1010000;
+				break;
+				
+				case 5: // Saw/Triangle
+					basicWaveform = B110000;
+				break;
+				
+				case 6: // Pulse/Saw/Triangle
+					basicWaveform = B1110000;
+				break;
+				
+				case 7: // Noise
+					basicWaveform = B10000000;
+				break;
+			}
+			waveformCombo = basicWaveform | waveformModifier;
+			if (insideRun == HIGH) {
+				writeWaveform((waveformCombo | 0x1),
+					leadThreeChannel,leadThreeChip);
+			}
+			else {
+				writeWaveform((waveformCombo & B11111110),
+					leadThreeChannel,leadThreeChip);
+			}
+		break;
+
+		case 10: // Waveform Modifier Selection
+			waveformModifierNumber = map(noteNumber,0,127,0,3);
+			switch (waveformModifierNumber) {
+				case 0: // Normal
+					waveformModifier = B0;
+				break;
+				
+				case 1: // Ring Mod
+					waveformModifier = B100;
+				break;
+				
+				case 2: // Sync
+					waveformModifier = B10;
+				break;
+				
+				case 3: // Ring Mod and Sync
+					waveformModifier = B110;
+				break;
+			}
+			waveformCombo = basicWaveform | waveformModifier;
+			if (insideRun == HIGH) {
+				writeWaveform((waveformCombo | 0x1),
+					leadThreeChannel,leadThreeChip);
+			}
+			else {
+				writeWaveform((waveformCombo & B11111110),
+					leadThreeChannel,leadThreeChip);
+			}
+		break;
+
+		case 11: // Attack Amount
+			attackAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadThreeChannel,leadThreeChip);
+		break;
+
+		case 12: // Decay Amount
+			decayAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadThreeChannel,leadThreeChip);
+		break;
+
+		case 13: // Sustain Amount
+			sustainAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadThreeChannel,leadThreeChip);
+		break;
+
+		case 14: // Release Amount
+			releaseAmount = map(noteNumber,0,127,0,15);
+			adsr = (attackAmount << 12) | (decayAmount << 8) | 
+				(sustainAmount << 4) | releaseAmount;
+			writeADSR(adsr,leadThreeChannel,leadThreeChip);
+		break;
+
+		case 15: // PWM Amount
+			pwmAmount = map(noteNumber,0,127,2048,0);
+			writePWM(pwmAmount,leadThreeChannel,leadThreeChip);
+		break;
+
+		case 16: // Portamento Speed
+			portamentoSpeedInMicros = map(noteNumber,0,127,1,2000);
 		break;
 	}
 }
@@ -2008,9 +2312,8 @@ void mainLeadTwoEngine(byte dataType, byte noteNumber, float floatData,
 //////////////////////////////////////////
 
 
+void ledFlash(byte dataType) {
 
-void ledFlash(boolean dataType) {
-	
 	static unsigned long currentMillis; 
 	static boolean ledOn = LOW;
 	static unsigned long ledTurnOffTime; 
@@ -2041,89 +2344,252 @@ void ledFlash(boolean dataType) {
 
 
 //////////////////////////////////////////
-//  SN76489 FUNCTIONS
+//  SID FUNCTIONS
 //////////////////////////////////////////
 
 
+void writeFrequency(float pitchInHertz, byte channel, byte chip) {  
+	// 0-65535 in Hz
 
-void writeDataToSN76489(byte data, byte chipWriteEnablePin) {
-  
-	chipWriteEnablePin = chipWriteEnablePin + 16; 
-	PORTB = data; 
-	digitalWrite(chipWriteEnablePin, LOW);
+	byte addressLowByte[3] = {0x0,0x7,0xE};
+	byte addressHighByte[3] = {0x1,0x8,0xF};
+	byte lowByteOfFrequency;
+	byte highByteOfFrequency;
+	unsigned int frequencyValue;
+	
+	channel = channel - 1;
+	
+	frequencyValue = pitchInHertz / 0.0596;
+	
+	lowByteOfFrequency = frequencyValue % 0x100;
+	PORTD = addressLowByte[channel];
+	PORTB = lowByteOfFrequency;
+	pulseCS(chip);
+
+	highByteOfFrequency = frequencyValue >> 0x8;	
+	PORTD = addressHighByte[channel];
+	PORTB = highByteOfFrequency;
+	pulseCS(chip);
+}
+
+
+
+void writePWM(unsigned int width, byte channel, byte chip) {  
+	// 0-4095
+	
+	byte addressLowByte[3] = {0x2,0x9,0x10};
+	byte addressHighByte[3] = {0x3,0xA,0x11};
+	byte lowByteOfWidth;
+	byte highByteOfWidth;
+	
+	channel = channel - 1;
+
+	lowByteOfWidth = width % 0x100;
+	PORTD = addressLowByte[channel];
+	PORTB = lowByteOfWidth;
+	pulseCS(chip);
+
+	highByteOfWidth = width >> 0x8;
+	PORTD = addressHighByte[channel];
+	PORTB = highByteOfWidth;
+	pulseCS(chip);
+}
+
+
+
+
+
+void writeWaveform(byte waveform, byte channel, byte chip) { 
+
+	// (MSB -> LSB) Noise, Pulse, Saw, Triangle, ZERO, Ring Mod, Sync, Gate
+
+	byte controlAddress[3] = {0x4,0xB,0x12};
+	
+	channel = channel - 1;
+
+	PORTD = controlAddress[channel];
+	PORTB = waveform & B11110111;
+	pulseCS(chip);
+}
+
+
+
+
+void writeADSR(unsigned int adsr, byte channel, byte chip) { 
+	// A Nibble For Each Component (A is MSB, R is LSB)
+	
+	byte addressLowByte[3] = {0x6, 0xD, 0x14};
+	byte addressHighByte[3] = {0x5, 0xC, 0x13};
+	byte lowByteOfADSR;
+	byte highByteOfADSR;
+	
+	channel = channel - 1;
+
+	lowByteOfADSR = adsr % 0x100;
+	PORTD = addressLowByte[channel];
+	PORTB = lowByteOfADSR;
+	pulseCS(chip);
+
+	highByteOfADSR = adsr >> 0x8;
+	PORTD = addressHighByte[channel];
+	PORTB = highByteOfADSR;
+	pulseCS(chip);
+}
+
+
+
+
+void writeFilter(byte dataType, unsigned int uIntData, byte chip) {
+	static byte lowByteOfCutoff = B00000000;
+	static byte highByteOfCutoff = B00000000;
+	static boolean filterOnOne = 0;
+	static boolean filterOnTwo = 0;
+	static boolean filterOnThree = 0;
+	static byte resonanceNibble = 0;
+	static byte volumeNibble = 15;
+	static byte filterType = B00010000;
+	static byte threeMute = B00000000;
+	static byte filterExternal = 0;
+
+	switch (dataType) {
+		case 0: // Initialization
+			PORTD = 0x15;
+			PORTB = B00000000;
+			pulseCS(chip);
+
+			PORTD = 0x16;
+			PORTB = B11000000;
+			pulseCS(chip);
+
+			PORTD = 0x17;
+			PORTB = B00000000;
+			pulseCS(chip);
+
+			PORTD = 0x18;
+			PORTB = B00011111;
+			pulseCS(chip);
+		break;
+		
+		case 1: // Running
+		break;
+		
+		case 2: // Turn Filter On For A Channel (Make second argument 1-3 to turn on, 4-6 to turn off.)
+			switch (uIntData) {
+				case 1: 
+					filterOnOne = 1;
+				break;
+				case 2: 
+					filterOnTwo = 1;
+				break;
+				case 3: 
+					filterOnThree = 1;
+				break;
+				case 4: 
+					filterOnOne = 0;
+				break;
+				case 5: 
+					filterOnTwo = 0;
+				break;
+				case 6: 
+					filterOnThree = 0;
+				break;
+			}
+			PORTD = 0x17;
+			PORTB = filterOnOne | (filterOnTwo << 1) | (filterOnThree << 2) | 
+				(filterExternal << 3) | (resonanceNibble << 4);
+			pulseCS(chip);
+		break;
+
+		case 3: // Set Cutoff Frequency (0-2047)
+			if (uIntData > 2047){
+				uIntData = 2047;
+			}
+			lowByteOfCutoff = uIntData % 0x8;
+			PORTD = 0x15;
+			PORTB = lowByteOfCutoff;
+			pulseCS(chip);
+
+			highByteOfCutoff = uIntData >> 0x03;
+			PORTD = 0x16;
+			PORTB = highByteOfCutoff;
+			pulseCS(chip);
+		break;
+
+		case 4: // Set Resonance (0-15)
+			if (uIntData > 15){
+				uIntData = 15;
+			}
+			resonanceNibble = uIntData & B00001111;
+			
+			PORTD = 0x17;
+			PORTB = filterOnOne | (filterOnTwo << 1) | (filterOnThree << 2) | 
+				(filterExternal << 3) | (resonanceNibble << 4);
+			pulseCS(chip);
+		break;
+
+		case 5: // Set Volume (0-15)
+			if (uIntData > 15){
+				uIntData = 15;
+			}
+			volumeNibble = uIntData & B00001111;
+			
+			PORTD = 0x18;
+			PORTB = volumeNibble | filterType | threeMute;
+			pulseCS(chip);
+		break;
+
+		case 6: // Set Filter Type (1-3)
+			if (uIntData == 1){ // LP
+				filterType = B00010000;
+			}
+			if (uIntData == 2){ // BP
+				filterType = B00100000;
+			}
+			if (uIntData == 3){ // HP
+				filterType = B01000000;
+			}
+			
+			PORTD = 0x18;
+			PORTB = volumeNibble | filterType | threeMute;
+			pulseCS(chip);
+		break;
+
+		case 7: // Mute Three
+			if (uIntData == 1){
+				threeMute = B10000000;
+			}
+			else {
+				threeMute = B00000000;
+			}
+
+			PORTD = 0x18;
+			PORTB = volumeNibble | filterType | threeMute;
+			pulseCS(chip);
+		break;
+
+		case 8: // Filter External Audio Pin
+			if (uIntData == 1){
+				filterExternal = 1;
+			}
+			else {
+				filterExternal = 0;
+			}
+			
+			PORTD = 0x17;
+			PORTB = filterOnOne | (filterOnTwo << 1) | (filterOnThree << 2) | (filterExternal << 3) | (resonanceNibble << 4);
+			pulseCS(chip);
+		break;
+	}
+}
+
+
+
+
+
+void pulseCS(byte chipNumber) {
+	digitalWrite(CSchip0pin,HIGH);
 	delayMicroseconds(transferHoldTime);
-	digitalWrite(chipWriteEnablePin, HIGH);
-}
-
-
-
-
-void writeNoiseType(byte noteNumber, byte chipNumber) {
-  
-	byte noiseNumber;
-	static byte noiseTypeArray[] = {
-		B11100000, // C
-		B11100000, // C#
-		B11100001, // D
-		B11100001, // D#
-		B11100010, // E
-		B11100100, // F
-		B11100101, // F#
-		B11100110, // G
-		B11100110, // G#
-		B11100011, // A
-		B11100011, // A#
-		B11100111, // B
-		};
-	noiseNumber = noteNumber % 12;
-	writeDataToSN76489(noiseTypeArray[noiseNumber], chipNumber);
-}
-
-
-
-
-void writeAmplitude(byte velocity, byte toneBankNumber, byte chipNumber) {
-  
-	byte insideData;
-  
-	// Writes Latch Byte
-	toneBankNumber = toneBankNumber << 5;
-	velocity = 15 - (velocity >> 3);
-	insideData = B10010000 + toneBankNumber + velocity;
-	writeDataToSN76489(insideData, chipNumber);
-}
-
-
-
-
-void writeFrequency(float pitchInHertz, byte toneBankNumber, byte chipNumber) {
-	byte latchByte;
-	byte dataByte;
-	int pitchDataInteger;
-	byte pitchDataFirstByte;
-	byte pitchDataSecondByte;
-	float frequencyInHalfPeriodClockCycles;
-
-	frequencyInHalfPeriodClockCycles = oscillator / (pitchInHertz * 32.0);
-   
-	pitchDataInteger = round(frequencyInHalfPeriodClockCycles);
-	if (pitchDataInteger < 0) {
-		pitchDataInteger = 0;
-	}
-	else if (pitchDataInteger > 1023) {
-		pitchDataInteger = 1023;
-	}
-  
-	// Writes Latch Byte
-	pitchDataFirstByte = pitchDataInteger % 16;
-	toneBankNumber = toneBankNumber << 5;
-	latchByte = B10000000 | toneBankNumber | pitchDataFirstByte; // Forces top bit to 1
-	writeDataToSN76489(latchByte, chipNumber);
-
-	// Writes Data Byte
-	pitchDataSecondByte = pitchDataInteger >> 4;  
-	dataByte = pitchDataSecondByte & B00111111; // Forces top two bits to 0s
-	writeDataToSN76489(dataByte, chipNumber);
+	digitalWrite(CSchip0pin,LOW);
 }
 
 
@@ -2137,41 +2603,31 @@ void writeFrequency(float pitchInHertz, byte toneBankNumber, byte chipNumber) {
 
 
 void OnNoteOn (byte channel, byte note, byte velocity) {
-  
-	if (noVelocity == HIGH){
+	if (noVelocity == HIGH) {
 		velocity = 127;
 	}
-  
 	switch (channel) {
 		case 1: //sample engine
-			mainSampleEngine(2,note,velocity,0);
-		break;
-		
-		case 2:
-			mainPolyEngine(2,note,velocity);
-		break;
-		
-		case 3:
-			bassArpeggiator(2,note,velocity,0,0);
-			mainBassEngine(2,note,0,LOW,0,0);
-		break;
-		
-		case 4:
-			mainNoiseEngineOne(2,note,velocity);
-		break;
-		
-		case 5:
-    		if (note > 32){
 			leadOneArpeggiator(2,note,velocity,0,0);
-			mainLeadOneEngine(2,note,0,LOW,0,0);
-    		}
+			mainLeadOneEngine(2,note,0,LOW,0,0);  
 		break;
-
-		case 6:
-			if (note > 32) {
-				leadTwoArpeggiator(2,note,velocity,0,0);
-				mainLeadTwoEngine(2,note,0,LOW,0,0);
-			}
+    
+		case 2:
+			leadTwoArpeggiator(2,note,velocity,0,0);
+			mainLeadTwoEngine(2,note,0,LOW,0,0); 
+		break;
+    
+		case 3:
+			leadThreeArpeggiator(2,note,velocity,0,0);
+			mainLeadThreeEngine(2,note,0,LOW,0,0); 
+		break;
+    
+		case 4:
+			mainSampleEngine(2,note,velocity,0);	
+		break;
+    
+		case 5:
+			mainPolyEngine(2,note,velocity);
 		break;
 	}
 	ledFlash(2);
@@ -2180,68 +2636,60 @@ void OnNoteOn (byte channel, byte note, byte velocity) {
 
 
 
-
 void OnNoteOff(byte channel, byte note, byte velocity) {
 	switch (channel) {
-		case 1: //sample engine
-			mainSampleEngine(3,note,velocity,0);
-		break;
-    
-		case 2:
-			mainPolyEngine(3,note,velocity);
-		break;
-    
-		case 3:
-			bassArpeggiator(3,note,velocity,0,0);
-			mainBassEngine(3,note,0,LOW,0,0);
-		break;
-    
-		case 4:
-			mainNoiseEngineOne(3,note, velocity);
-		break;
-    
-		case 5:
+		case 1: 
 			leadOneArpeggiator(3,note,velocity,0,0);
 			mainLeadOneEngine(3,note,0,LOW,0,0);
 		break;
-
-		case 6:
+    
+		case 2:
 			leadTwoArpeggiator(3,note,velocity,0,0);
 			mainLeadTwoEngine(3,note,0,LOW,0,0);
 		break;
+    
+		case 3:
+			leadThreeArpeggiator(3,note,velocity,0,0);
+			mainLeadThreeEngine(3,note,0,LOW,0,0);
+		break;
+    
+		case 4:
+			mainSampleEngine(3,note,velocity,0);
+		break;
+    
+		case 5:
+			mainPolyEngine(3,note,velocity);
+      break;
 	}
 }
 
 
 
 
-
 void OnControlChange(byte channel, byte control, byte value) {
-  
 	switch(control) {
-		case 1: // Mod wheel, which controls different things for different engines.
+
+		// Mod wheel, which controls different things for different engines.
+		case 1: 
 			switch (channel) {
 				case 1: 
-					mainSampleEngine(5, value, 0, 0);
+					mainLeadOneEngine(5, value, 0, LOW, 0, 0);
 				break;          
 				
 				case 2: 
-					mainPolyEngine(5, value, 0);
+					mainLeadTwoEngine(5, value, 0, LOW, 0, 0);
 				break;
 				
 				case 3: 
-					mainBassEngine(5, value, 0, LOW, 0, 0);
+					mainLeadThreeEngine(5, value, 0, LOW, 0, 0);
 				break;
 				
 				case 4: 
+					mainSampleEngine(5, value, 0, 0);
 				break;
 				
 				case 5: 
-					mainLeadOneEngine(5, value, 0, LOW, 0, 0);
-				break;
-				
-				case 6: 
-					mainLeadTwoEngine(5, value, 0, LOW, 0, 0);
+					mainPolyEngine(5, value, 0);
 				break;
 			}
 		break;
@@ -2250,87 +2698,290 @@ void OnControlChange(byte channel, byte control, byte value) {
 			bendRange = map(value,0,127,1,12);
 		break;
     
-		case 3: // Decay
-			switch (channel) {
-				case 2: // mainPoly Decay
-					mainPolyEngine(6,value,0);
-				break;
-
-				case 3: // mainBass Decay
-					mainBassEngine(6,value,0,LOW,0,0);
-				break;
-
-				case 5:
-					mainLeadOneEngine(6,value,0,LOW,0,0);
-				break;
-
-				case 6:
-					mainLeadTwoEngine(6,value,0,LOW,0,0);
-				break;
-			}
+		case 3: 
 		break;
     
 		case 4: // Arpeggiator On/Off
 			switch (channel) {
-				case 1: // Sample
-				break;
-
-				case 2: // Poly
-				break;
-
-				case 3: // mainBass Engine
-					bassArpeggiator(4,value,0,0,0);
-				break;
-
-				case 4: // mainNoise Engine
-				break;
-
-				case 5: // mainLeadOne Engine
+				case 1: 
 					leadOneArpeggiator(4,value,0,0,0);
 				break;
-
-				case 6: // mainLeadTwo Engine
+				
+				case 2: 
 					leadTwoArpeggiator(4,value,0,0,0);
+				break;
+				
+				case 3: 
+					leadThreeArpeggiator(4,value,0,0,0);
 				break;
 			}
 		break;
     
 		case 5: // Arpeggiator Speed
 			switch (channel) {
-				case 3: // Bass Arpeggiator Speed
-					bassArpeggiator(5,value,0,0,0);
-				break;
-
-				case 5:
+				case 1: 
 					leadOneArpeggiator(5,value,0,0,0);
 				break;
 
-				case 6:
+				case 2: 
 					leadTwoArpeggiator(5,value,0,0,0);
+				break;
+
+				case 3: 
+					leadThreeArpeggiator(5,value,0,0,0);
+				break;
+
+				case 4:
+				break;
+
+				case 5:
+				break;
+        
+				case 6:
 				break;
 			}
 		break;
 
+		case 6: // Basic Waveform Selection
+			switch (channel) {
+				case 1: 
+					mainLeadOneEngine(9, value, 0, LOW, 0, 0);
+				break;
+				
+				case 2: 
+					mainLeadTwoEngine(9, value, 0, LOW, 0, 0);
+				break;
+				
+				case 3: 
+					mainLeadThreeEngine(9, value, 0, LOW, 0, 0);
+				break;
+				
+				case 5: 
+					mainPolyEngine(9, value, 0);
+				break;
+			}
+		break;
+
+		case 7: // Waveform Modifier
+			switch (channel) {
+				case 1: 
+					mainLeadOneEngine(10, value, 0, LOW, 0, 0);
+				break;
+				
+				case 2: 
+					mainLeadTwoEngine(10, value, 0, LOW, 0, 0);
+				break;
+				
+				case 3: 
+					mainLeadThreeEngine(10, value, 0, LOW, 0, 0);
+				break;
+				
+				case 5: 
+					mainPolyEngine(10, value, 0);
+				break;
+			}
+		break;
+
+		case 8: // Attack Amount
+			switch (channel) {
+				case 1: 
+					mainLeadOneEngine(11, value, 0, LOW, 0, 0);
+				break;
+				
+				case 2: 
+					mainLeadTwoEngine(11, value, 0, LOW, 0, 0);
+				break;
+				
+				case 3: 
+					mainLeadThreeEngine(11, value, 0, LOW, 0, 0);
+				break;
+				
+				case 5: 
+					mainPolyEngine(11, value, 0);
+				break;
+			}
+		break;
+
+		case 9: // Decay Amount
+			switch (channel) {
+				case 1: 
+					mainLeadOneEngine(12, value, 0, LOW, 0, 0);
+				break;
+				
+				case 2: 
+					mainLeadTwoEngine(12, value, 0, LOW, 0, 0);
+				break;
+				
+				case 3: 
+					mainLeadThreeEngine(12, value, 0, LOW, 0, 0);
+				break;
+				
+				case 5: 
+					mainPolyEngine(12, value, 0);
+				break;
+			}
+		break;
+
+		case 10: // Sustain Amount
+			switch (channel) {
+				case 1: 
+					mainLeadOneEngine(13, value, 0, LOW, 0, 0);
+				break;
+				
+				case 2: 
+					mainLeadTwoEngine(13, value, 0, LOW, 0, 0);
+				break;
+				
+				case 3: 
+					mainLeadThreeEngine(13, value, 0, LOW, 0, 0);
+				break;
+				
+				case 5: 
+					mainPolyEngine(13, value, 0);
+				break;
+			}
+		break;
+
+		case 11: // Release Amount
+			switch (channel) {
+				case 1: 
+					mainLeadOneEngine(14, value, 0, LOW, 0, 0);
+				break;
+				
+				case 2: 
+					mainLeadTwoEngine(14, value, 0, LOW, 0, 0);
+				break;
+				
+				case 3: 
+					mainLeadThreeEngine(14, value, 0, LOW, 0, 0);
+				break;
+				
+				case 5: 
+					mainPolyEngine(14, value, 0);
+				break;
+			}
+		break;
+
+		case 12: // PWM Amount
+			switch (channel) {
+				case 1: 
+					mainLeadOneEngine(15, value, 0, LOW, 0, 0);
+				break;
+				
+				case 2: 
+					mainLeadTwoEngine(15, value, 0, LOW, 0, 0);
+				break;
+				
+				case 3: 
+					mainLeadThreeEngine(15, value, 0, LOW, 0, 0);
+				break;
+				
+				case 5: 
+					mainPolyEngine(15, value, 0);
+				break;
+			}
+		break;
+
+		case 13: // Filter Inclusion
+			switch (channel) {
+				case 1:
+					if (value > 0){
+						writeFilter(2,1,0);
+					}
+					else {
+						writeFilter(2,4,0);
+					}
+				break;
+
+				case 2:
+					if (value > 0){
+						writeFilter(2,2,0);
+					}
+					else {
+						writeFilter(2,5,0);
+					}
+				break;
+
+				case 3:
+					if (value > 0){
+						writeFilter(2,3,0);
+					}
+					else {
+						writeFilter(2,6,0);
+					}
+				break;
+
+				case 5:
+					if (value > 0){
+						writeFilter(2,1,0);
+						writeFilter(2,2,0);
+						writeFilter(2,3,0);
+					}
+					else {
+						writeFilter(2,4,0);
+						writeFilter(2,5,0);
+						writeFilter(2,6,0);
+					}
+				break;
+			}
+		break;
+
+		case 14: // Set Cutoff Frequency
+			writeFilter(3,map(value,0,127,0,2047),0);
+		break;
+
+		case 15: // Set Resonance
+			writeFilter(4,map(value,0,127,0,15),0);
+		break;
+
+		case 16: // Set Volume
+			writeFilter(5,map(value,0,127,0,15),0);
+		break;
+
+		case 17: // Set Filter Type
+			writeFilter(6,map(value,0,127,1,3),0);
+		break;
+
+		case 18: // Mute Three
+			if (value > 0){
+				writeFilter(7,1,0);
+			}
+			else {
+				writeFilter(7,0,0);
+			}
+		break;
+		
+		/*
+		case 19: // Turn on sample mode
+			if (value > 0){
+
+				// Include ext audio DC offset for sample playback
+				writeFilter(8,1,0); 
+			}
+			else {
+				writeFilter(8,0,0);	
+			}
+		break;
+		*/
+
 		case 20: // Porta Speed
 			switch (channel) {
-				case 3: // Bass portamento speed
-					mainBassEngine(9,value,0,LOW,0,0);
+				case 1: 
+					mainLeadOneEngine(16,value,0,LOW,0,0);
 				break;
 				
-				case 5: // Lead One portamento speed
-					mainLeadOneEngine(9,value,0,LOW,0,0);
+				case 2: 
+					mainLeadTwoEngine(16,value,0,LOW,0,0);
 				break;
 				
-				case 6: // Lead Two portamento speed
-      		mainLeadTwoEngine(9,value,0,LOW,0,0);
+				case 3: 
+					mainLeadThreeEngine(16,value,0,LOW,0,0);
 				break;
 			}
 		break;
 	}
 	ledFlash(2);
 }
-
-
 
 
 
@@ -2339,25 +2990,33 @@ void OnPitchChange(byte channel, int pitch) {
   
 	float bendRangeInCoefficient;
 	float bendFactor;
+	
 	bendRangeInCoefficient = (pow(2,((float)bendRange/12)));
 	bendFactor = pow(bendRangeInCoefficient,(((float)pitch/8192.0)-1.0));
   
 	switch (channel) {
 		case 1: 
-			mainSampleEngine(4,0,0,pitch);
-		break;
-		case 3: 
-			mainBassEngine(4, 0, bendFactor, LOW, 0, 0);
-		break;
-		case 5: 
 			mainLeadOneEngine(4, 0, bendFactor, LOW, 0, 0);
 		break;
-		case 6: 
-			mainLeadTwoEngine(4, 0, bendFactor, LOW, 0, 0);
+		
+		case 2: 
+			mainLeadTwoEngine(4, 0, bendFactor, LOW, 0, 0); 
+		break;
+		
+		case 3: 
+			mainLeadThreeEngine(4, 0, bendFactor, LOW, 0, 0);
+		break;
+		
+		case 4: 
+			mainSampleEngine(4,0,0,pitch);
+		break;
+		
+		case 5: 
 		break;
 	}
 	ledFlash(2);
 }
+
 
 
 
