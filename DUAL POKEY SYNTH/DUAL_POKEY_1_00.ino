@@ -1,8 +1,102 @@
-// STRUCTURE:
+// DUAL POKEY SYNTHESIZER 1.00
+// -Brian Peters
+// www.brianpeters.net
 //
-// Global Variables
-// PCM Sample Data
-// PCM Lengths
+// - This is the single file version of the program for ease of copy/pasting.
+// - The program will also work with a single POKEY chip.
+// - Please see the schematic, feature list, channel/CC guide, and video
+//		for more information.
+//
+//
+//
+//	- MATERIALS
+//
+// 	- 1x Teensy 2.0 Board
+//			(www.pjrc.com)
+//		- 2x POKEY 40 Pin DIP
+//			(eBay or www.best-electronics-ca.com)
+//		- 1x 1.8432 MHz Full Can Oscillator
+//			(eBay)
+//		- 2x 10k Resistors
+//		- 2x 10uF Electrolytic Capacitors
+//		- 2x 1/4" Audio Jacks (or 3.5mm)
+//		- 1x 60+ Row Breadboard
+//		- 1x USB A to Mini B Cable
+//		- Lots of Wire
+//
+//
+//	- UPLOADING PROGRAM TO TEENSY (Ideally before wiring everything.)
+// 	- After installing the teensy loader, go to
+//			Tools > Board > Teensy 2.0
+//				and
+//			Tools > USB Type > MIDI
+//		- Copy/Paste this program into the Arduino IDE
+//		- Upload
+//
+//
+//	- CONNECTION LIST (POKEYS ARE INDEXED STARTING AT PIN 1)
+//
+//		- Teensy Vcc
+//			- Breadboard +5V Bus
+//				- POKEY #1 & #2 PIN 17 (Vcc)
+//				- POKEY #1 & #2 PIN 30 (CS1)
+//				- Oscillator +5V (top right with sharp edge on top left)
+//				- 10k Resistor #1 & #2 Leg 1
+//		- Teensy GND
+//			- Breadboard GND Bus
+//				- POKEY #1 & #2 PIN 1 (Vss)
+//				- POKEY #1 & #2 PIN 32 (R/!W)
+//				- Oscillator GND (bottom left with sharp edge on top left)
+//				- Audio Jack #1 & #2 Sleeve
+//		- Teensy B0
+//			- POKEY #1 & #2 PIN 38 (D0)
+//		- Teensy B1
+//			- POKEY #1 & #2 PIN 39 (D1)
+//		- Teensy B2
+//			- POKEY #1 & #2 PIN 40 (D2)
+//		- Teensy B3
+//			- POKEY #1 & #2 PIN 2 (D3)
+//		- Teensy B4
+//			- POKEY #1 & #2 PIN 3 (D4)
+//		- Teensy B5
+//			- POKEY #1 & #2 PIN 4 (D5)
+//		- Teensy B6
+//			- POKEY #1 & #2 PIN 5 (D6)
+//		- Teensy B7
+//			- POKEY #1 & #2 PIN 6 (D7)
+//		- Teensy D0
+//			- POKEY #1 & #2 PIN 36 (A0)
+//		- Teensy D1
+//			- POKEY #1 & #2 PIN 35 (A1)
+//		- Teensy D2
+//			- POKEY #1 & #2 PIN 34 (A2)
+//		- Teensy D3
+//			- POKEY #1 & #2 PIN 33 (A3)
+//		- Teensy C6
+//			- POKEY #1 PIN 30 (!CS0)
+//		- Teensy C7
+//			- POKEY #2 PIN 30 (!CS0)
+//		- Oscillator Signal Out
+//			- POKEY #1 & #2 PIN 7 (02)
+//		- POKEY #1 PIN 37 (Audio Out)
+//			- 10k Resistor #1 Leg 2
+//			- 10uF Electrolytic Capacitor #1 Positive Leg
+//		- 10uF Electrolytic Capacitor #1 Negative Leg
+//			- Audio Jack #1 Tip
+//		- POKEY #2 PIN 37 (Audio Out)
+//			- 10k Resistor #2 Leg 2
+//			- 10uF Electrolytic Capacitor #2 Positive Leg
+//		- 10uF Electrolytic Capacitor #2 Negative Leg
+//			- Audio Jack #2 Tip
+//
+//
+//
+//
+// PROGRAM STRUCTURE:
+//
+// 	Global Variables
+// 	PCM Sample Data
+// 	PCM Lengths
 //
 // setup
 // loop
@@ -10,58 +104,58 @@
 //
 // AUXILIARY FUNCTIONS:
 // 
-// mostRecentNoteInArray
-// eraseOldestNoteInArray
-// mostRecentVelocityInArray
-// placeNoteInFirstEmptyArrayPosition
-// placeNoteAndVelocityInFirstEmptyArrayPosition
-// eraseThisNoteInArray
-// testArrayContentsForAtLeastTwoNotes
-// findSingleNoteInArray
-// testArrayContentsForNoNotes
+// 	mostRecentNoteInArray
+// 	eraseOldestNoteInArray
+// 	mostRecentVelocityInArray
+// 	placeNoteInFirstEmptyArrayPosition
+// 	placeNoteAndVelocityInFirstEmptyArrayPosition
+// 	eraseThisNoteInArray
+// 	testArrayContentsForAtLeastTwoNotes
+// 	findSingleNoteInArray
+// 	testArrayContentsForNoNotes
 //
 //
 // OSCILLATOR AND ARPEGGIATOR FUNCTIONS:
 //
-// mainSampleEngine
-// chip0PolyEngine
-// chip1PolyEngine
-// leadOneArpeggiator
-// mainLeadOneEngine
-// leadTwoArpeggiator
-// mainLeadTwoEngine
+// 	mainSampleEngine
+// 	chip0PolyEngine
+// 	chip1PolyEngine
+// 	leadOneArpeggiator
+// 	mainLeadOneEngine
+// 	leadTwoArpeggiator
+// 	mainLeadTwoEngine
 //
 //
 // MISC FUNCTIONS:
 //
-// ledFlash
+// 	ledFlash
 //
 //
 // POKEY COMMANDS (Internal)
 //
-// placeData
-// placeRegister
-// writePulseToCS
-// writeChannelControl
+// 	placeData
+// 	placeRegister
+// 	writePulseToCS
+// 	writeChannelControl
 //
 // 
 // POKEY COMMANDS (External)
 //
-// writeFrequency
-// writeShiftRegister
-// writeAmplitude
-// writeForceAmplitude
-// writeShiftRegisterAndAmplitude
-// writeShiftBits
-// writeChipDivider
+// 	writeFrequency
+// 	writeShiftRegister
+// 	writeAmplitude
+// 	writeForceAmplitude
+// 	writeShiftRegisterAndAmplitude
+// 	writeShiftBits
+// 	writeChipDivider
 //
 //
 // MIDI CALLBACK FUNCTIONS
 //
-// OnNoteOn
-// OnNoteOff
-// OnControlChange
-// OnPitchChange
+// 	OnNoteOn
+// 	OnNoteOff
+// 	OnControlChange
+// 	OnPitchChange
 //
 //
 // The usbMIDI.read() in the main loop can trigger all of the MIDI callback
