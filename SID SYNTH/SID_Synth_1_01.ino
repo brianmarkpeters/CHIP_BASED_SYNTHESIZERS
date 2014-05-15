@@ -186,7 +186,7 @@
 
 
 unsigned long clock = 1843200;
-byte transferHoldTime = 1;
+byte transferHoldTime = 4;
 byte bendRange = 12;  // Default bend range
 boolean noVelocity = LOW; // Defaults all velocities to 127
 const float vibRateFactor = 1.0;
@@ -261,14 +261,14 @@ void setup() {
 	// Write Enable pins
 	// Each connected to !CS Pin(s)
 	pinMode(CSchip0pin, OUTPUT); 
-	digitalWrite(CSchip0pin, LOW);  
+	digitalWrite(CSchip0pin, HIGH);  
   
 
 	// LED Pin
 	pinMode(11, OUTPUT);
 	
 	writeFilter(0,0,0);
-
+	
 	for (byte i=1;i<4;i++) {
   	
 		writePWM(2048,i,0);
@@ -284,10 +284,9 @@ void setup() {
 	}
 	mainSampleEngine(2,57,127,0);
 	for (byte i=1;i<4;i++) {
-		for (byte j=1;j<4;j++) {
-			writeWaveform(B01000000,i,0);
-			writeFrequency(0,i,0);
-		}
+		writeWaveform(B01000000,i,0);
+		writeFrequency(0,i,0);
+		
 	}
 	while (millis() < 3000) {
 		mainSampleEngine(1,0,0,0);
@@ -2384,7 +2383,7 @@ void writePWM(unsigned int width, byte channel, byte chip) {
 	
 	channel = channel - 1;
 
-	lowByteOfWidth = width % 0x100;
+	lowByteOfWidth = width & 0xFF;
 	PORTD = addressLowByte[channel];
 	PORTB = lowByteOfWidth;
 	pulseCS(chip);
@@ -2425,7 +2424,7 @@ void writeADSR(unsigned int adsr, byte channel, byte chip) {
 	
 	channel = channel - 1;
 
-	lowByteOfADSR = adsr % 0x100;
+	lowByteOfADSR = adsr & 0xFF;
 	PORTD = addressLowByte[channel];
 	PORTB = lowByteOfADSR;
 	pulseCS(chip);
@@ -2458,7 +2457,7 @@ void writeFilter(byte dataType, unsigned int uIntData, byte chip) {
 			pulseCS(chip);
 
 			PORTD = 0x16;
-			PORTB = B11000000;
+			PORTB = B01100100;
 			pulseCS(chip);
 
 			PORTD = 0x17;
@@ -2504,7 +2503,7 @@ void writeFilter(byte dataType, unsigned int uIntData, byte chip) {
 			if (uIntData > 2047){
 				uIntData = 2047;
 			}
-			lowByteOfCutoff = uIntData % 0x8;
+			lowByteOfCutoff = uIntData & 0x7;
 			PORTD = 0x15;
 			PORTB = lowByteOfCutoff;
 			pulseCS(chip);
@@ -2587,9 +2586,9 @@ void writeFilter(byte dataType, unsigned int uIntData, byte chip) {
 
 
 void pulseCS(byte chipNumber) {
-	digitalWrite(CSchip0pin,HIGH);
-	delayMicroseconds(transferHoldTime);
 	digitalWrite(CSchip0pin,LOW);
+	delayMicroseconds(transferHoldTime);
+	digitalWrite(CSchip0pin,HIGH);
 }
 
 
