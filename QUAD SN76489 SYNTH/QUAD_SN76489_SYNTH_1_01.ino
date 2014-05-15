@@ -2115,7 +2115,7 @@ void writeFrequency(float pitchInHertz, byte toneBankNumber, byte chipNumber) {
 	}
   
 	// Writes Latch Byte
-	pitchDataFirstByte = pitchDataInteger % 16;
+	pitchDataFirstByte = pitchDataInteger & 0xF;
 	toneBankNumber = toneBankNumber << 5;
 	latchByte = B10000000 | toneBankNumber | pitchDataFirstByte; // Forces top bit to 1
 	writeDataToSN76489(latchByte, chipNumber);

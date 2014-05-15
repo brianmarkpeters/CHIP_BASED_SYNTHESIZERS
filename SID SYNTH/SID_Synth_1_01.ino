@@ -2361,7 +2361,7 @@ void writeFrequency(float pitchInHertz, byte channel, byte chip) {
 	
 	frequencyValue = pitchInHertz / 0.0596;
 	
-	lowByteOfFrequency = frequencyValue % 0x100;
+	lowByteOfFrequency = frequencyValue & 0xFF;
 	PORTD = addressLowByte[channel];
 	PORTB = lowByteOfFrequency;
 	pulseCS(chip);
