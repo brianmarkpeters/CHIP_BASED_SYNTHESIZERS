@@ -1,4 +1,4 @@
-// QUAD SN76489 SYNTHESIZER 1.00
+// QUAD SN76489 SYNTHESIZER 1.01
 // -Brian Peters
 // www.brianpeters.net
 //

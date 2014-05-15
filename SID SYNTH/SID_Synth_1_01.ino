@@ -1,4 +1,4 @@
-// SID SYNTH 1.00
+// SID SYNTH 1.01
 // -Brian Peters
 // www.brianpeters.net
 //
@@ -268,7 +268,7 @@ void setup() {
 	pinMode(11, OUTPUT);
 	
 	writeFilter(0,0,0);
-	
+
 	for (byte i=1;i<4;i++) {
   	
 		writePWM(2048,i,0);
