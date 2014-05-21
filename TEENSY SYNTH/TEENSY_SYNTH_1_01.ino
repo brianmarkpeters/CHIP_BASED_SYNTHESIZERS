@@ -1,4 +1,4 @@
-// TEENSY SYNTH 1.00
+// TEENSY SYNTH 1.01
 // -Brian Peters
 // www.brianpeters.net
 //
@@ -19,6 +19,7 @@
 //		- 1x 1/4" Audio Jack (or 3.5mm)
 //		- 1x Small Breadboard
 //		- 1x USB A to Micro B Cable
+//		- 1x Line Matching Transfomer for output
 //		- Some Wire
 //
 //
