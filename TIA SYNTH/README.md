@@ -4,7 +4,7 @@ One Atari TIA chip and one Teensy 2.0
 
 ------------------------------------------------------------------------------------------
 
-Thanks for your interest in my TIA Synth.  There's a video below that covers all of the features I included on the synthesizer.
+Thanks for your interest in my TIA Synth.  Here's a video that covers all of the features I included on the synthesizer.
 
 ------------------------------------------------------------------------------------------
 
