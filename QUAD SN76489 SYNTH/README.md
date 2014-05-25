@@ -4,7 +4,7 @@ Four SN76489 chips and one Teensy 2.0
 
 ------------------------------------------------------------------------------------------
 
-Thanks for your interest in my Quad SN76489 Synth.  There's a video below that covers all of the features I included on the synthesizer.
+Thanks for your interest in my Quad SN76489 Synth.  Here's a video that covers all of the features I included on the synthesizer.
 
 ------------------------------------------------------------------------------------------
 
