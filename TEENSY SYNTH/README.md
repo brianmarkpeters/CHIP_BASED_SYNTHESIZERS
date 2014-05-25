@@ -4,7 +4,7 @@ Just a Teensy 3.1 Arduino development board turned synth.
 
 ------------------------------------------------------------------------------------------
 
-Thanks for your interest in my "Teensy" Synth.  There's a video below that covers all of the features I included on the synthesizer.
+Thanks for your interest in my "Teensy" Synth.  Here's a video that covers all of the features I included on the synthesizer.
 
 ------------------------------------------------------------------------------------------
 
