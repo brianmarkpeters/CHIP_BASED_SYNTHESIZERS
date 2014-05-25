@@ -4,7 +4,7 @@ Two Atari POKEY chips and a Teensy 2.0
 
 ------------------------------------------------------------------------------------------
 
-Thanks for your interest in my Dual POKEY Synth.  There's a video below that covers all of the features I included on the synthesizer.
+Thanks for your interest in my Dual POKEY Synth.  Here's a video that covers all of the features I included on the synthesizer.
 
 ------------------------------------------------------------------------------------------
 
